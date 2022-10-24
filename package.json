@@ -4,9 +4,10 @@
     "displayName":     "Pillars",
     "icon":            "icon.png",
     "name":            "pillar",
+    "publisher":       "karyfoundation",
     "version":         "0.0.1",
     "repository": {
-      "git": "https://github.com/pouyakary/pillar.git"
+        "git":     "https://github.com/pouyakary/pillar.git"
     },
     "engines": {
         "vscode":      "^1.72.0"
