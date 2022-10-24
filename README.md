@@ -4,30 +4,15 @@ With ❤️ by Dragon's Lover.
 
 Pillars gives you the ability to move your cursor based on the columns identified in the lines above. Which makes aligning codes much easier if you the formatter doesn't support it.
 
-![](https://user-images.githubusercontent.com/2157285/197598810-1ef1bef4-dc76-4cab-a9fb-6c45a55cf96c.gif)
+This is a demo showing the Pillars, detecting the columns in the line 1 and stopping the cursor in line 3 according to them:
 
-## But Why?
+![](https://user-images.githubusercontent.com/2157285/197640137-136e7db6-7087-4dd0-a7e3-cb2db323d35c.gif)
 
-The tool let's you write this things easily.
+And in this demo, Pillars let's the author write the comment in two visual vertical columns with a lots of space between them. (Imagine writing the white space by hand...)
 
-```ts
-import * as vscode      from 'vscode';
-import * as engine      from '../../engine';
-import * as tools       from '../tools';
-import * as services    from '../services';
-import * as parameters  from '../parameters';
-import * as languages   from '../languages';
-```
+![](https://user-images.githubusercontent.com/2157285/197640142-8edbddc5-7364-45fa-9bc1-48c92765292b.gif)
 
-```dart
-const _pageBackgroundColor        = Color(0xFF141414);
-const _centeredBoxBackgroundColor = Color(0xFF323232);
-const _minimumAllAroundPadding    = 50.0;
-const _miniPageContainerWidth     = 360.0;
-const _miniPagePadding            = 30.0;
-```
-
-## But How?
+## Commands
 
 ### macOS
 - Move Left: `option`+`command`+`left`
