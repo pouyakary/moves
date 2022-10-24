@@ -1,7 +1,7 @@
 {
-  "name": "indent",
-  "displayName": "indent",
-  "description": "Move your cursor to the right indentation",
+  "name": "move",
+  "displayName": "Cursor Moves",
+  "description": "Moves your cursor under the columns in the above line",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.72.0"
@@ -16,14 +16,23 @@
   "contributes": {
     "commands": [
       {
-        "command": "indent.moveCursorUnderNextColumn",
-        "title": "Move Cursor Under The Next Column"
+        "command": "move.cursorUnderNextColumn",
+        "title": "Move Cursor Under Next Column"
+      },
+      {
+        "command": "move.cursorUnderPreviousColumn",
+        "title": "Move Cursor Under Previous Column"
       }
     ],
     "keybindings": [
         {
-            "command":     "indent.moveCursorUnderNextColumn",
+            "command":     "move.cursorUnderNextColumn",
             "key":         "cmd+right",
+            "when":        "editorTextFocus"
+        },
+        {
+            "command":     "move.cursorUnderPreviousColumn",
+            "key":         "cmd+left",
             "when":        "editorTextFocus"
         }
     ]

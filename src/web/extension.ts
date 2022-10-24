@@ -1,5 +1,5 @@
-import * as vscode 		from 'vscode';
-import * as commands 	from './commands/forward';
+import * as vscode	from 'vscode';
+import * as move 		from './moves';
 
 // ─── Activate ──────────────────────────────────────────────────────────── ✣ ─
 
@@ -9,7 +9,8 @@ export function activate(context: vscode.ExtensionContext) {
 		context.subscriptions.push(disposable);
 	}
 
-	register('indent.moveCursorUnderNextColumn', commands.moveForwardCommand);
+	register('move.cursorUnderNextColumn', move.cursorUnderNextColumn);
+	register('move.cursorUnderPreviousColumn', move.cursorUnderPreviousColumn);
 }
 
 // ─── Deactivate ────────────────────────────────────────────────────────── ✣ ─

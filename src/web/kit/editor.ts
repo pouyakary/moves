@@ -2,6 +2,12 @@ import * as vscode from 'vscode';
 
 export class Editor {
 
+  // ─── Display Message ─────────────────────────────────────────────────
+
+  static alert(message: string) {
+    vscode.window.showInformationMessage(message);
+  }
+
   // ─── Editor ──────────────────────────────────────────────────────────
 
   static get #editor() {
@@ -48,8 +54,8 @@ export class Editor {
   // ─── Insert At ───────────────────────────────────────────────────────
 
   static async insertAt(position: vscode.Position, text: string) {
-    this.#editor.edit(textEditorEdit => {
-      textEditorEdit.replace(position, text);
+    await this.#editor.edit(edit => {
+      edit.replace(position, text);
     });
     await vscode.commands.executeCommand('cancelSelection');
   }
@@ -63,10 +69,10 @@ export class Editor {
   // ─── Get The Upper Line ──────────────────────────────────────────────
 
   static get contentOfTheFirstFilledLineAbove(): string {
-    if (this.currentLine === 1) {
+    if (this.currentLine === 0) {
       return '';
     }
-    for (let index = this.currentLine - 1; index > 0; index--) {
+    for (let index = this.currentLine - 1; index >= 0; index--) {
       if (this.#lineIsNotEmptyAt(index)) {
         return this.lineAt(index);
       }
@@ -96,5 +102,41 @@ export class Editor {
     }
 
     return results;
+  }
+
+  // ─── Next Column ─────────────────────────────────────────────────────
+
+  static get nextColumn(): number {
+    const { columns, currentColumn } = Editor;
+    for (const column of columns) {
+      if (column > currentColumn) {
+        return column;
+      }
+    }
+    return currentColumn;
+  }
+
+  // ─── Previous Column ─────────────────────────────────────────────────
+
+  static get previousColumn(): number {
+    const { columns, currentColumn } = Editor;
+
+    for (const column of columns.reverse()) {
+      if (column < currentColumn) {
+        return column;
+      }
+    }
+    return currentColumn;
+  }
+
+  // ─── Delete Current Line Between Two Columns ─────────────────────────
+
+  static async deleteCurrentLineBetweenTwoColumn(start: number, end: number) {
+    const startPosition   = new vscode.Position(this.currentLine, start);
+    const endPosition     = new vscode.Position(this.currentLine, end);
+    const deletionRange   = new vscode.Range(startPosition, endPosition);
+
+    await this.#editor.edit(edit => edit.delete(deletionRange));
+    await vscode.commands.executeCommand('cancelSelection');
   }
 }
