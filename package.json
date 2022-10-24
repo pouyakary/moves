@@ -1,6 +1,6 @@
 {
-  "name": "move",
-  "displayName": "Cursor Moves",
+  "name": "pillar",
+  "displayName": "Pillars",
   "description": "Moves your cursor under the columns in the above line",
   "version": "0.0.1",
   "engines": {
@@ -16,22 +16,22 @@
   "contributes": {
     "commands": [
       {
-        "command": "move.cursorUnderNextColumn",
+        "command": "pillar.moveCursorUnderNextColumn",
         "title": "Move Cursor Under Next Column"
       },
       {
-        "command": "move.cursorUnderPreviousColumn",
+        "command": "pillar.moveCursorUnderPreviousColumn",
         "title": "Move Cursor Under Previous Column"
       }
     ],
     "keybindings": [
         {
-            "command":     "move.cursorUnderNextColumn",
+            "command":     "pillar.moveCursorUnderNextColumn",
             "key":          "alt+cmd+right",
             "when":        "editorTextFocus"
         },
         {
-            "command":     "move.cursorUnderPreviousColumn",
+            "command":     "pillar.moveCursorUnderPreviousColumn",
             "key":         "alt+cmd+left",
             "when":        "editorTextFocus"
         }

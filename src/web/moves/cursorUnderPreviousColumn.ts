@@ -5,7 +5,6 @@ import { Editor } from '../kit';
 export async function cursorUnderPreviousColumn() {
   const currentColumn     = Editor.currentColumn;
   const previousColumns   = Editor.previousColumn;
-
   const isTextWhitespace  = isSpaceBetweenTwoColumnsErasable(
     previousColumns, currentColumn,
   );

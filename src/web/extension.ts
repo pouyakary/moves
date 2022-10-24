@@ -4,13 +4,15 @@ import * as move 		from './moves';
 // ─── Activate ──────────────────────────────────────────────────────────── ✣ ─
 
 export function activate(context: vscode.ExtensionContext) {
-	function register(name: string, callback: () => Promise<void>) {
+	function registerCommandHandler(name: string, callback: () => Promise<void>) {
 		const disposable = vscode.commands.registerCommand(name, callback);
 		context.subscriptions.push(disposable);
 	}
 
-	register('move.cursorUnderNextColumn', move.cursorUnderNextColumn);
-	register('move.cursorUnderPreviousColumn', move.cursorUnderPreviousColumn);
+	registerCommandHandler('pillar.moveCursorUnderNextColumn',
+		move.cursorUnderNextColumn);
+	registerCommandHandler('pillar.moveCursorUnderPreviousColumn',
+		move.cursorUnderPreviousColumn);
 }
 
 // ─── Deactivate ────────────────────────────────────────────────────────── ✣ ─
