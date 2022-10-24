@@ -4,8 +4,9 @@
     "displayName":     "Pillars",
     "icon":            "icon.png",
     "name":            "pillar",
+    "preview":         true,
     "publisher":       "karyfoundation",
-    "version":         "0.0.1",
+    "version":         "0.0.2",
     "repository": {
         "git":     "https://github.com/pouyakary/pillar.git"
     },
