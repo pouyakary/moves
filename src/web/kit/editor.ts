@@ -55,9 +55,8 @@ export class Editor {
 
   static async insertAt(position: vscode.Position, text: string) {
     await this.#editor.edit(edit => {
-      edit.replace(position, text);
+      edit.insert(position, text);
     });
-    await vscode.commands.executeCommand('cancelSelection');
   }
 
   // ─── Is Line Not Empty ───────────────────────────────────────────────
@@ -137,6 +136,5 @@ export class Editor {
     const deletionRange   = new vscode.Range(startPosition, endPosition);
 
     await this.#editor.edit(edit => edit.delete(deletionRange));
-    await vscode.commands.executeCommand('cancelSelection');
   }
 }
