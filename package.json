@@ -27,12 +27,12 @@
     "keybindings": [
         {
             "command":     "move.cursorUnderNextColumn",
-            "key":         "cmd+right",
+            "key":          "alt+cmd+right",
             "when":        "editorTextFocus"
         },
         {
             "command":     "move.cursorUnderPreviousColumn",
-            "key":         "cmd+left",
+            "key":         "alt+cmd+left",
             "when":        "editorTextFocus"
         }
     ]
