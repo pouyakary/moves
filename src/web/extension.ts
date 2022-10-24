@@ -1,33 +1,17 @@
-import * as vscode from 'vscode';
-import { SpaceComputationContext } from './context';
+import * as vscode 		from 'vscode';
+import * as commands 	from './commands/forward';
+
+// ─── Activate ──────────────────────────────────────────────────────────── ✣ ─
 
 export function activate(context: vscode.ExtensionContext) {
-	let disposable = vscode.commands.registerCommand('indent.moveCursorUnderNextColumn', async () => {
-		let computationContext = new SpaceComputationContext();
+	function register(name: string, callback: () => Promise<void>) {
+		const disposable = vscode.commands.registerCommand(name, callback);
+		context.subscriptions.push(disposable);
+	}
 
-		await replace(
-			computationContext.currentLine,
-			computationContext.newLineContent,
-		);
-
-  	await vscode.commands.executeCommand("cursorLineEnd");
-	});
-
-	context.subscriptions.push(disposable);
+	register('indent.moveCursorUnderNextColumn', commands.moveForwardCommand);
 }
 
-async function replace(line: number, text: string) {
-	const editor = vscode.window.activeTextEditor;
+// ─── Deactivate ────────────────────────────────────────────────────────── ✣ ─
 
-  if (editor) {
-    editor.edit(textEditorEdit => {
-      const {range} = editor.document.lineAt(line);
-      textEditorEdit.replace(range, text);
-    });
-
-    await vscode.commands.executeCommand('cancelSelection');
-  }
-}
-
-// this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }
