@@ -30,8 +30,8 @@
                 "title":       "🕹️ Move Cursor under Previous Column"
             },
             {
-                "command":     "pillar.addCursorToAllLinesOfSameColumn",
-                "title":       "🗜️ Add Cursor to all Neighbor Columns"
+                "command":     "pillar.selectAllWordNeighborLines",
+                "title":       "🗜️ Select all Word-Neighbor lines"
             }
         ],
         "keybindings": [
@@ -46,7 +46,7 @@
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "pillar.addCursorToAllLinesOfSameColumn",
+                "command":     "pillar.selectAllWordNeighborLines",
                 "key":         "alt+cmd+a",
                 "when":        "editorTextFocus"
             }
@@ -54,7 +54,7 @@
         "menus": {
             "editor/context": [
                 {
-                    "command":     "pillar.addCursorToAllLinesOfSameColumn"
+                    "command":     "pillar.selectAllWordNeighborLines"
                 }
             ]
         }

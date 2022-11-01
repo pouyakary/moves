@@ -13,8 +13,8 @@ export function activate(context: vscode.ExtensionContext) {
 		move.cursorUnderNextColumn);
 	registerCommandHandler('pillar.moveCursorUnderPreviousColumn',
 		move.cursorUnderPreviousColumn);
-	registerCommandHandler('pillar.addCursorToAllLinesOfSameColumn',
-		move.addCursorToAllLinesOfSameColumn);
+	registerCommandHandler('pillar.selectAllWordNeighborLines',
+		move.selectAllWordNeighborLines);
 }
 
 // ─── Deactivate ────────────────────────────────────────────────────────── ✣ ─

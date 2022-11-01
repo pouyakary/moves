@@ -110,7 +110,7 @@ export class Editor {
 
   // ─── Lines With The Same Column ──────────────────────────────────────
 
-  static get linesWithTheSameColumnAndWord(): [number, number] {
+  static get wordNeighborLinesRange(): [number, number] {
     const currentColumn = this.currentColumn;
     const lineCount     = this.#editor.document.lineCount;
     const currentWord   = this.currentWord;
@@ -207,7 +207,7 @@ export class Editor {
 
   // ─── Select Columns In Range ─────────────────────────────────────────
 
-  static selectColumnsInRangeOfLines(
+  static putCursorsInLinesRangeWithCurrentColumn(
     startingLine: number,
     endLine:      number,
   ) {
