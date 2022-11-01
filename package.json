@@ -23,11 +23,15 @@
         "commands": [
             {
                 "command":     "pillar.moveCursorUnderNextColumn",
-                "title":       "Move Cursor Under Next Column"
+                "title":       "🕹️ Move Cursor under Next Column"
             },
             {
                 "command":     "pillar.moveCursorUnderPreviousColumn",
-                "title":       "Move Cursor Under Previous Column"
+                "title":       "🕹️ Move Cursor under Previous Column"
+            },
+            {
+                "command":     "pillar.addCursorToAllLinesOfSameColumn",
+                "title":       "🗜️ Add Cursor to all Neighbor Columns"
             }
         ],
         "keybindings": [
@@ -40,8 +44,20 @@
                 "command":     "pillar.moveCursorUnderPreviousColumn",
                 "key":         "alt+cmd+left",
                 "when":        "editorTextFocus"
+            },
+            {
+                "command":     "pillar.addCursorToAllLinesOfSameColumn",
+                "key":         "alt+cmd+a",
+                "when":        "editorTextFocus"
             }
-        ]
+        ],
+        "menus": {
+            "editor/context": [
+                {
+                    "command":     "pillar.addCursorToAllLinesOfSameColumn"
+                }
+            ]
+        }
     },
     "scripts": {
         "compile-web":             "webpack",

@@ -39,6 +39,29 @@ export class Editor {
     return this.#editor.document.lineAt(line).text;
   }
 
+  // ─── Word At ─────────────────────────────────────────────────────────
+
+  static wordAt(line: number, column: number): string {
+    const content = this.lineAt(line);
+    let   buffer  = "";
+
+    for (let index = column; index < content.length; index++) {
+      const currentCharacter = content[index];
+      if (currentCharacter === ' ' || currentCharacter === '\t') {
+        break;
+      }
+      buffer += currentCharacter;
+    }
+
+    return buffer;
+  }
+
+  // ─── Current Word ────────────────────────────────────────────────────
+
+  static get currentWord(): string {
+    return this.wordAt(this.currentLine, this.currentColumn);
+  }
+
   // ─── Current Line ────────────────────────────────────────────────────
 
   static get currentLineContent(): string {
@@ -82,7 +105,51 @@ export class Editor {
   // ─── Columns ─────────────────────────────────────────────────────────
 
   static get columns(): number[] {
-    const line     = Editor.contentOfTheFirstFilledLineAbove;
+    return this.#computeColumns(Editor.contentOfTheFirstFilledLineAbove);
+  }
+
+  // ─── Lines With The Same Column ──────────────────────────────────────
+
+  static get linesWithTheSameColumnAndWord(): [number, number] {
+    const currentColumn = this.currentColumn;
+    const lineCount     = this.#editor.document.lineCount;
+    const currentWord   = this.currentWord;
+
+    let startLine = this.currentLine;
+    let endLine   = this.currentLine;
+
+    // lines above
+    for (let lineNo = this.currentLine; lineNo > 0; lineNo--) {
+      const columns = this.#computeColumns(this.lineAt(lineNo));
+      if (columns.includes(currentColumn)) {
+        const word = Editor.wordAt(lineNo, currentColumn);
+        if (word === currentWord) {
+          startLine = lineNo;
+        }
+      } else {
+        break;
+      }
+    }
+
+    // lines under
+    for (let lineNo = this.currentLine; lineNo < lineCount; lineNo++) {
+      const columns = this.#computeColumns(this.lineAt(lineNo));
+      if (columns.includes(currentColumn)) {
+        const word = Editor.wordAt(lineNo, currentColumn);
+        if (word === currentWord) {
+          endLine = lineNo;
+        }
+      } else {
+        break;
+      }
+    }
+
+    return [startLine, endLine];
+  }
+
+  // ─── Compute Column Of The Line ──────────────────────────────────────
+
+  static #computeColumns(line: string): number[] {
     const tabSize  = Editor.tabSize;
     const results  = new Array<number>();
 
@@ -136,5 +203,25 @@ export class Editor {
     const deletionRange   = new vscode.Range(startPosition, endPosition);
 
     await this.#editor.edit(edit => edit.delete(deletionRange));
+  }
+
+  // ─── Select Columns In Range ─────────────────────────────────────────
+
+  static selectColumnsInRangeOfLines(
+    startingLine: number,
+    endLine:      number,
+  ) {
+    const currentColumn = Editor.currentColumn;
+    const selections    = new Array<vscode.Selection>();
+
+    for (let lineNumber = startingLine; lineNumber <= endLine; lineNumber++) {
+      selections.push(
+        new vscode.Selection(
+          lineNumber, currentColumn, lineNumber, currentColumn,
+        ),
+      );
+    }
+
+    this.#editor.selections = selections;
   }
 }
