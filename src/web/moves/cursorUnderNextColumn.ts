@@ -1,9 +1,15 @@
-import { EditorKit } from '../kit';
+import * as kit from '../kit';
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
 export async function cursorUnderNextColumn() {
-  const delta             = EditorKit.nextRenderColumn - EditorKit.currentPhysicalColumn;
+  const nextColumn        = kit.Columns.nextRenderColumn;
+  const currentColumn     = kit.Columns.currentPhysicalColumn;
+  const delta             = nextColumn - currentColumn;
   const additionalSpaces  = ' '.repeat(delta);
-  await EditorKit.insertAt(EditorKit.physicalCursorPosition, additionalSpaces);
+
+  await kit.Editor.insertAt(
+    kit.Columns.physicalCursorPosition,
+    additionalSpaces,
+  );
 }

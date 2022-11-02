@@ -1,16 +1,16 @@
-import { EditorKit } from '../kit';
+import * as kit from '../kit';
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
 export async function cursorUnderPreviousColumn() {
-  const currentColumn     = EditorKit.currentPhysicalColumn;
-  const previousColumns   = EditorKit.previousRenderColumn;
+  const currentColumn     = kit.Columns.currentPhysicalColumn;
+  const previousColumns   = kit.Columns.previousRenderColumn;
   const isTextWhitespace  = isSpaceBetweenTwoColumnsErasable(
     previousColumns, currentColumn,
   );
 
   if (isTextWhitespace) {
-    await EditorKit.deleteCurrentLineBetweenTwoColumn(
+    await kit.Editor.deleteCurrentLineBetweenTwoColumn(
       previousColumns, currentColumn
     );
   }
@@ -19,7 +19,7 @@ export async function cursorUnderPreviousColumn() {
 // ─── Is The Space Between The Two Columns White Space ──────────────────── ✣ ─
 
 function isSpaceBetweenTwoColumnsErasable(current: number, previous: number) {
-  const textBetweenTwoColumns = EditorKit.currentLineContent.substring(
+  const textBetweenTwoColumns = kit.Editor.currentLineContent.substring(
     previous, current,
   );
   return /^\s*$/.test(textBetweenTwoColumns);

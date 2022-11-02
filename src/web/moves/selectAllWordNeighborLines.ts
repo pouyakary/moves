@@ -1,8 +1,8 @@
-import { EditorKit } from '../kit';
+import * as kit from '../kit';
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
 export async function selectAllWordNeighborLines() {
-  const [startLine, endLine] = EditorKit.wordNeighborLinesRange;
-  EditorKit.putCursorsInLinesRangeWithCurrentColumn(startLine, endLine);
+  const [startLine, endLine] = kit.Columns.wordNeighborLinesRange;
+  kit.Columns.putCursorsInLinesRangeWithCurrentColumn(startLine, endLine);
 }
