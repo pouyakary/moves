@@ -1,3 +1,3 @@
 export * from './cursorUnderNextColumn';
 export * from './cursorUnderPreviousColumn';
-export * from './selectAllWordNeighborLines';
+export * from './addCursorToAllNeighborLines';

@@ -16,32 +16,11 @@ export class Columns {
     );
   }
 
-  // ─── Count Tabs Algorithm ────────────────────────────────────────────
-
-  static #computeRenderTextSize(text: string) {
-    const characters   = [...text];
-    const tabSize      = kit.Document.tabSize;
-    let   renderColumn = 0;
-
-    for (let index = 0; index < characters.length; index++) {
-      // This is very important. Tabs are stopping at columns of their
-      // ratio. Say when you are at column 10, tab size is 4, the nearest
-      // divisor of 4 is 12, therefore the tab stops at column 12 not 14.
-      if (characters[index] === '\t') {
-        const remainder = (renderColumn + 1) / tabSize;
-        renderColumn += tabSize - remainder;
-      } else {
-        renderColumn++;
-      }
-    }
-
-    return renderColumn;
-  }
-
   // ─── Current Render Column ───────────────────────────────────────────
 
   static #physicalToRender(lineNumber: number, physicalColumn: number) {
     const content      = kit.Document.contentOfLine(lineNumber);
+    const characters   = [...content];
     const tabSize      = kit.Document.tabSize;
     let   renderColumn = 0;
 
@@ -49,9 +28,9 @@ export class Columns {
       // This is very important. Tabs are stopping at columns of their
       // ratio. Say when you are at column 10, tab size is 4, the nearest
       // divisor of 4 is 12, therefore the tab stops at column 12 not 14.
-      if (content[index] === '\t') {
-        const remainder = (renderColumn + 1) / tabSize;
-        renderColumn += tabSize - remainder;
+      if (characters[index] === '\t') {
+        const remainder = (renderColumn + 1) % tabSize;
+        renderColumn += tabSize - remainder + 1;
       } else {
         renderColumn++;
       }
@@ -63,23 +42,24 @@ export class Columns {
   // ─── Convert Render Column To Physical Column In Line ────────────────
 
   static #renderToPhysical(
-    line:         number,
-    renderColumn: number,
+    line:           number,
+    expectedColumn: number,
   ): number | null {
 
-    const lineContent = kit.Document.contentOfLine(line);
-    const tabSize     = kit.Document.tabSize;
-    let   counter     = renderColumn;
+    const lineContent  = kit.Document.contentOfLine(line);
+    const characters   = [...lineContent];
+    const tabSize      = kit.Document.tabSize;
+    let   renderColumn = 0;
 
-    for (let index = 0; index < lineContent.length; index++) {
-      if (counter === 0) {
+    for (let index = 0; index < characters.length; index++) {
+      if (renderColumn === expectedColumn) {
         return index;
       }
-      if (lineContent[index] === '\t') {
-        const remainder = (counter + 1) / tabSize;
-        counter += tabSize - remainder;
+      if (characters[index] === '\t') {
+        const remainder = (renderColumn + 1) % tabSize;
+        renderColumn += tabSize - remainder + 1;
       } else {
-        counter--;
+        renderColumn++;
       }
     }
 
@@ -103,8 +83,8 @@ export class Columns {
       }
 
       if (character === '\t') {
-        const remainder = (visualColumnCount + 1) / tabSize;
-        visualColumnCount += tabSize - remainder;
+        const remainder = (visualColumnCount + 1) % tabSize;
+        visualColumnCount += tabSize - remainder + 1;
       } else {
         visualColumnCount++;
       }
@@ -117,7 +97,7 @@ export class Columns {
 
   // ─── Word At ─────────────────────────────────────────────────────────
 
-  static getWordAtRenderColumn(
+  static getCharacterAtRenderColumn(
     line:         number,
     renderColumn: number,
   ): string | null {
@@ -127,23 +107,14 @@ export class Columns {
     }
 
     const content = kit.Document.contentOfLine(line);
-    let   buffer  = "";
 
-    for (let index = physicalColumn; index < content.length; index++) {
-      const currentCharacter = content[index];
-      if (currentCharacter === ' ' || currentCharacter === '\t') {
-        break;
-      }
-      buffer += currentCharacter;
-    }
-
-    return buffer;
+    return content[physicalColumn];
   }
 
-  // ─── Current Word ────────────────────────────────────────────────────
+  // ─── Current Character ───────────────────────────────────────────────
 
-  static get currentWord(): string | null {
-    return this.getWordAtRenderColumn(
+  static get currentCharacter(): string | null {
+    return this.getCharacterAtRenderColumn(
       kit.Document.currentLine,
       this.currentRenderColumn,
     );
@@ -174,12 +145,17 @@ export class Columns {
 
   // ─── Lines With The Same Column ──────────────────────────────────────
 
-  static get wordNeighborLinesRange(): [number, number] {
+  static get neighborLinesOfCurrentRenderColumn(): [number, number] | null {
     const currentRenderColumn = this.currentRenderColumn;
     const lineCount           = kit.Document.documentLineCount;
-    const currentWord         = this.currentWord;
-    let   startLine           = kit.Document.currentLine;
-    let   endLine             = kit.Document.currentLine;
+    const currentCharacter    = this.currentCharacter;
+
+    if (currentCharacter === null) {
+      return null;
+    }
+
+    let startLine = kit.Document.currentLine;
+    let endLine   = kit.Document.currentLine;
 
     // lines above
     for (let lineNo = kit.Document.currentLine; lineNo > 0; lineNo--) {
@@ -187,8 +163,11 @@ export class Columns {
         kit.Document.contentOfLine(lineNo),
       );
       if (columns.includes(currentRenderColumn)) {
-        const word = this.getWordAtRenderColumn(lineNo, currentRenderColumn);
-        if (word === currentWord) {
+        const character = this.getCharacterAtRenderColumn(
+          lineNo,
+          currentRenderColumn,
+        );
+        if (character === currentCharacter) {
           startLine = lineNo;
         }
       } else {
@@ -202,8 +181,8 @@ export class Columns {
         kit.Document.contentOfLine(lineNo)
       );
       if (columns.includes(currentRenderColumn)) {
-        const word = this.getWordAtRenderColumn(lineNo, currentRenderColumn);
-        if (word === currentWord) {
+        const word = this.getCharacterAtRenderColumn(lineNo, currentRenderColumn);
+        if (word === currentCharacter) {
           endLine = lineNo;
         }
       } else {

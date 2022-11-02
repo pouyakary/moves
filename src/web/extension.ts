@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
 		move.cursorUnderPreviousColumnBelow);
 
 	registerCommandHandler('pillar.selectAllWordNeighborLines',
-		move.selectAllWordNeighborLines);
+		move.addCursorToAllNeighborLines);
 }
 
 // ─── Deactivate ────────────────────────────────────────────────────────── ✣ ─
