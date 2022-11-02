@@ -27,19 +27,19 @@
             },
             {
                 "command":     "pillar.moveCursorUnderNextColumnBelow",
-                "title":       "🕹️ Move Cursor under Next Column Below"
+                "title":       "🕹️ Move Cursor over Next Column Below"
             },
             {
                 "command":     "pillar.moveCursorUnderPreviousColumnAbove",
-                "title":       "🕹️ Move Cursor under Previous Column"
+                "title":       "🕹️ Move Cursor under Previous Column Above"
             },
             {
                 "command":     "pillar.moveCursorUnderPreviousColumnBelow",
-                "title":       "🕹️ Move Cursor under Previous Column"
+                "title":       "🕹️ Move Cursor over Previous Column Below"
             },
             {
                 "command":     "pillar.selectAllWordNeighborLines",
-                "title":       "🗜️ Select all Word-Neighbor lines"
+                "title":       "🗜️ Add Cursor to all Neighbor Lines"
             }
         ],
         "keybindings": [

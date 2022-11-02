@@ -12,15 +12,22 @@ And in this demo, Pillars let's the author write the comment in two visual verti
 
 ![](https://user-images.githubusercontent.com/2157285/197640142-8edbddc5-7364-45fa-9bc1-48c92765292b.gif)
 
+<br><br>
+
 ## Commands
 
-### macOS
-- Move Left: `option`+`command`+`left`
-- Move Right: `option`+`command`+`right`
+| Cursor Anchoring Movement Commands | macOS | Linux and Windows |
+|:--------|:------|:------------------|
+| 🕹️ Move Cursor under Next Column Above | `option` + `command` + `right` | `alt` + `windows` + `right` |
+| 🕹️ Move Cursor over Next Column Below | `control` + `option` + `right` | `control` + `alt` + `right` |
+| 🕹️ Move Cursor under Previous Column Above | `option` + `command` + `left` | `alt` + `windows` + `left` |
+| 🕹️ Move Cursor over Previous Column Below | `control` + `option` + `left` | `control` + `alt` + `left` |
 
-### Linux and Windows
-- Move Left: `alt`+`windows`+`left`
-- Move Right: `alt`+`windows`+`right`
+<br>
+
+| Multiline Cursor Commands | macOS | Linux and Windows |
+|:--------|:------|:------------------|
+| 🗜️ Add Cursor to all Neighbor Lines | `command` + `option` + `a` | `windows` + `alt` + `a` |
 
 <br><br><br>
 
