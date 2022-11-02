@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-export class Editor {
+export class EditorKit {
 
   // ─── Display Message ─────────────────────────────────────────────────
 
@@ -17,35 +17,94 @@ export class Editor {
   // ─── Position ────────────────────────────────────────────────────────
 
   static get currentLine(): number {
-      return this.#editor.selection.active.line;
+    return this.#editor.selection.active.line;
   }
 
-  static get currentColumn(): number {
-      return this.#editor.selection.active.character;
+  static get currentPhysicalColumn(): number {
+    return this.#editor.selection.active.character;
+  }
+
+  static get currentRenderColumn(): number {
+    return this.#physicalColumnToRenderColumn(
+      this.currentLine,
+      this.currentPhysicalColumn,
+    );
+  }
+
+  // ─── Current Render Column ───────────────────────────────────────────
+
+  static #physicalColumnToRenderColumn(
+    lineNumber:     number,
+    physicalColumn: number,
+  ) {
+    const content      = this.contentOfLine(lineNumber);
+    let   renderColumn = 0;
+
+    for (let index = 0; index < physicalColumn; index++) {
+      renderColumn += content[index] === '\t' ? this.tabSize : 1;
+    }
+
+    return renderColumn;
+  }
+
+  // ─── Convert Render Column To Physical Column In Line ────────────────
+
+  static #renderColumnToPhysicalColumn(
+    line:         number,
+    renderColumn: number,
+  ): number | null {
+
+    const lineContent = this.contentOfLine(line);
+    const tabSize     = this.tabSize;
+    let   counter     = renderColumn;
+
+    for (let index = 0; index < lineContent.length; index++) {
+      if (counter === 0) {
+        return index;
+      }
+      if (counter < 0) {
+        return null;
+      }
+      const currentCharacter = lineContent[index];
+      counter -= currentCharacter === '\t' ? tabSize : 1;
+    }
+
+    return null;
   }
 
   // ─── Tab Size ────────────────────────────────────────────────────────
 
   static get tabSize(): number {
-    const editorTabSetting  = this.#editor.options.tabSize;
-    const currentTabSize    = typeof editorTabSetting === 'number'
-                                ? editorTabSetting : 2;
+    const editorTabSetting = this.#editor.options.tabSize;
+    const currentTabSize   = typeof editorTabSetting === 'number'
+                             ? editorTabSetting : 2;
     return currentTabSize;
   }
 
   // ─── Get Line At ─────────────────────────────────────────────────────
 
-  static lineAt(line: number): string {
+  static contentOfLine(line: number): string {
     return this.#editor.document.lineAt(line).text;
   }
 
   // ─── Word At ─────────────────────────────────────────────────────────
 
-  static wordAt(line: number, column: number): string {
-    const content = this.lineAt(line);
+  static getWordAtRenderColumn(
+    line:         number,
+    renderColumn: number,
+  ): string | null {
+    const physicalColumn = this.#renderColumnToPhysicalColumn(
+      line,
+      renderColumn,
+    );
+    if (physicalColumn === null) {
+      return null;
+    }
+
+    const content = this.contentOfLine(line);
     let   buffer  = "";
 
-    for (let index = column; index < content.length; index++) {
+    for (let index = physicalColumn; index < content.length; index++) {
       const currentCharacter = content[index];
       if (currentCharacter === ' ' || currentCharacter === '\t') {
         break;
@@ -58,20 +117,23 @@ export class Editor {
 
   // ─── Current Word ────────────────────────────────────────────────────
 
-  static get currentWord(): string {
-    return this.wordAt(this.currentLine, this.currentColumn);
+  static get currentWord(): string | null {
+    return this.getWordAtRenderColumn(
+      this.currentLine,
+      this.currentRenderColumn,
+    );
   }
 
   // ─── Current Line ────────────────────────────────────────────────────
 
   static get currentLineContent(): string {
-    return this.lineAt(this.currentLine);
+    return this.contentOfLine(this.currentLine);
   }
 
   // ─── Cursor Position ─────────────────────────────────────────────────
 
-  static get cursorPosition(): vscode.Position {
-    return new vscode.Position(this.currentLine, this.currentColumn);
+  static get physicalCursorPosition(): vscode.Position {
+    return new vscode.Position(this.currentLine, this.currentPhysicalColumn);
   }
 
   // ─── Insert At ───────────────────────────────────────────────────────
@@ -85,7 +147,7 @@ export class Editor {
   // ─── Is Line Not Empty ───────────────────────────────────────────────
 
   static #lineIsNotEmptyAt(line: number): boolean {
-    return /^\s*$/.test(Editor.lineAt(line)) === false;
+    return /^\s*$/.test(EditorKit.contentOfLine(line)) === false;
   }
 
   // ─── Get The Upper Line ──────────────────────────────────────────────
@@ -96,7 +158,7 @@ export class Editor {
     }
     for (let index = this.currentLine - 1; index >= 0; index--) {
       if (this.#lineIsNotEmptyAt(index)) {
-        return this.lineAt(index);
+        return this.contentOfLine(index);
       }
     }
     return '';
@@ -105,24 +167,25 @@ export class Editor {
   // ─── Columns ─────────────────────────────────────────────────────────
 
   static get columns(): number[] {
-    return this.#computeColumns(Editor.contentOfTheFirstFilledLineAbove);
+    return this.#computeRenderColumns(EditorKit.contentOfTheFirstFilledLineAbove);
   }
 
   // ─── Lines With The Same Column ──────────────────────────────────────
 
   static get wordNeighborLinesRange(): [number, number] {
-    const currentColumn = this.currentColumn;
-    const lineCount     = this.#editor.document.lineCount;
-    const currentWord   = this.currentWord;
+    const currentRenderColumn = this.currentRenderColumn;
+    const lineCount           = this.#editor.document.lineCount;
+    const currentWord         = this.currentWord;
+    let   startLine           = this.currentLine;
+    let   endLine             = this.currentLine;
 
-    let startLine = this.currentLine;
-    let endLine   = this.currentLine;
+    (`column: ${this.currentRenderColumn}, word: '${currentWord}'`);
 
     // lines above
     for (let lineNo = this.currentLine; lineNo > 0; lineNo--) {
-      const columns = this.#computeColumns(this.lineAt(lineNo));
-      if (columns.includes(currentColumn)) {
-        const word = Editor.wordAt(lineNo, currentColumn);
+      const columns = this.#computeRenderColumns(this.contentOfLine(lineNo));
+      if (columns.includes(currentRenderColumn)) {
+        const word = EditorKit.getWordAtRenderColumn(lineNo, currentRenderColumn);
         if (word === currentWord) {
           startLine = lineNo;
         }
@@ -133,9 +196,9 @@ export class Editor {
 
     // lines under
     for (let lineNo = this.currentLine; lineNo < lineCount; lineNo++) {
-      const columns = this.#computeColumns(this.lineAt(lineNo));
-      if (columns.includes(currentColumn)) {
-        const word = Editor.wordAt(lineNo, currentColumn);
+      const columns = this.#computeRenderColumns(this.contentOfLine(lineNo));
+      if (columns.includes(currentRenderColumn)) {
+        const word = EditorKit.getWordAtRenderColumn(lineNo, currentRenderColumn);
         if (word === currentWord) {
           endLine = lineNo;
         }
@@ -149,12 +212,12 @@ export class Editor {
 
   // ─── Compute Column Of The Line ──────────────────────────────────────
 
-  static #computeColumns(line: string): number[] {
-    const tabSize  = Editor.tabSize;
-    const results  = new Array<number>();
+  static #computeRenderColumns(line: string): number[] {
+    const tabSize = EditorKit.tabSize;
+    const results = new Array<number>();
 
-    let visualColumnCount         = 0;
     let previousCharacterWasSpace = true;
+    let visualColumnCount         = 0;
 
     for (const character of [...line]) {
       const characterIsNotSpace = character !== ' ' && character !== '\t';
@@ -172,8 +235,8 @@ export class Editor {
 
   // ─── Next Column ─────────────────────────────────────────────────────
 
-  static get nextColumn(): number {
-    const { columns, currentColumn } = Editor;
+  static get nextRenderColumn(): number {
+    const { columns, currentPhysicalColumn: currentColumn } = EditorKit;
     for (const column of columns) {
       if (column > currentColumn) {
         return column;
@@ -184,24 +247,22 @@ export class Editor {
 
   // ─── Previous Column ─────────────────────────────────────────────────
 
-  static get previousColumn(): number {
-    const { columns, currentColumn } = Editor;
-
+  static get previousRenderColumn(): number {
+    const { columns, currentPhysicalColumn } = EditorKit;
     for (const column of columns.reverse()) {
-      if (column < currentColumn) {
+      if (column < currentPhysicalColumn) {
         return column;
       }
     }
-    return currentColumn;
+    return currentPhysicalColumn;
   }
 
   // ─── Delete Current Line Between Two Columns ─────────────────────────
 
   static async deleteCurrentLineBetweenTwoColumn(start: number, end: number) {
-    const startPosition   = new vscode.Position(this.currentLine, start);
-    const endPosition     = new vscode.Position(this.currentLine, end);
-    const deletionRange   = new vscode.Range(startPosition, endPosition);
-
+    const startPosition = new vscode.Position(this.currentLine, start);
+    const endPosition   = new vscode.Position(this.currentLine, end);
+    const deletionRange = new vscode.Range(startPosition, endPosition);
     await this.#editor.edit(edit => edit.delete(deletionRange));
   }
 
@@ -211,13 +272,17 @@ export class Editor {
     startingLine: number,
     endLine:      number,
   ) {
-    const currentColumn = Editor.currentColumn;
-    const selections    = new Array<vscode.Selection>();
+    const currentRenderColumn = EditorKit.currentRenderColumn;
+    const selections          = new Array<vscode.Selection>();
 
     for (let lineNumber = startingLine; lineNumber <= endLine; lineNumber++) {
+      const physicalColumn = this.#renderColumnToPhysicalColumn(
+        lineNumber,
+        currentRenderColumn,
+      );
       selections.push(
         new vscode.Selection(
-          lineNumber, currentColumn, lineNumber, currentColumn,
+          lineNumber, physicalColumn!, lineNumber, physicalColumn!,
         ),
       );
     }

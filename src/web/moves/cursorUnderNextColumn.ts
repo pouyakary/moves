@@ -1,9 +1,9 @@
-import { Editor } from '../kit';
+import { EditorKit } from '../kit';
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
 export async function cursorUnderNextColumn() {
-  const delta             = Editor.nextColumn - Editor.currentColumn;
+  const delta             = EditorKit.nextRenderColumn - EditorKit.currentPhysicalColumn;
   const additionalSpaces  = ' '.repeat(delta);
-  await Editor.insertAt(Editor.cursorPosition, additionalSpaces);
+  await EditorKit.insertAt(EditorKit.physicalCursorPosition, additionalSpaces);
 }
