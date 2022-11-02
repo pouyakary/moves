@@ -1,12 +1,6 @@
 import * as vscode from 'vscode';
 
-export class Editor {
-
-  // ─── Display Message ─────────────────────────────────────────────────
-
-  static alert(message: string) {
-    vscode.window.showInformationMessage(message);
-  }
+export class Document {
 
   // ─── Editor ──────────────────────────────────────────────────────────
 
@@ -65,33 +59,10 @@ export class Editor {
     return this.contentOfLine(this.currentLine);
   }
 
-  // ─── Insert At ───────────────────────────────────────────────────────
-
-  static async insertAt(position: vscode.Position, text: string) {
-    await this.#editor.edit(edit => {
-      edit.insert(position, text);
-    });
-  }
 
   // ─── Is Line Not Empty ───────────────────────────────────────────────
 
   static #lineIsNotEmptyAt(line: number): boolean {
-    return /^\s*$/.test(Editor.contentOfLine(line)) === false;
-  }
-
-  // ─── Delete Current Line Between Two Columns ─────────────────────────
-
-  static async deleteCurrentLineBetweenTwoColumn(start: number, end: number) {
-    const startPosition = new vscode.Position(this.currentLine, start);
-    const endPosition   = new vscode.Position(this.currentLine, end);
-    const deletionRange = new vscode.Range(startPosition, endPosition);
-
-    await this.#editor.edit(edit => edit.delete(deletionRange));
-  }
-
-  // ─── Set Selections ──────────────────────────────────────────────────
-
-  static setSelections(selections: vscode.Selection[]) {
-    this.#editor.selections = selections;
+    return /^\s*$/.test(Document.contentOfLine(line)) === false;
   }
 }

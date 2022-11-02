@@ -8,7 +8,7 @@ export async function cursorUnderNextColumn() {
   const delta             = nextColumn - currentColumn;
   const additionalSpaces  = ' '.repeat(delta);
 
-  await kit.Editor.insertAt(
+  await kit.Actions.insertAt(
     kit.Columns.physicalCursorPosition,
     additionalSpaces,
   );

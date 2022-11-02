@@ -10,7 +10,7 @@ export async function cursorUnderPreviousColumn() {
   );
 
   if (isTextWhitespace) {
-    await kit.Editor.deleteCurrentLineBetweenTwoColumn(
+    await kit.Actions.deleteCurrentLineBetweenTwoColumn(
       previousColumns, currentColumn
     );
   }
@@ -19,7 +19,7 @@ export async function cursorUnderPreviousColumn() {
 // ─── Is The Space Between The Two Columns White Space ──────────────────── ✣ ─
 
 function isSpaceBetweenTwoColumnsErasable(current: number, previous: number) {
-  const textBetweenTwoColumns = kit.Editor.currentLineContent.substring(
+  const textBetweenTwoColumns = kit.Document.currentLineContent.substring(
     previous, current,
   );
   return /^\s*$/.test(textBetweenTwoColumns);

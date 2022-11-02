@@ -6,12 +6,12 @@ export class Columns {
   // ─── Position ────────────────────────────────────────────────────────
 
   static get currentPhysicalColumn(): number {
-    return kit.Editor.currentColumn;
+    return kit.Document.currentColumn;
   }
 
   static get currentRenderColumn(): number {
     return this.#physicalColumnToRenderColumn(
-      kit.Editor.currentLine,
+      kit.Document.currentLine,
       this.currentPhysicalColumn,
     );
 
@@ -23,8 +23,8 @@ export class Columns {
     lineNumber:     number,
     physicalColumn: number,
   ) {
-    const content      = kit.Editor.contentOfLine(lineNumber);
-    const tabSize      = kit.Editor.tabSize;
+    const content      = kit.Document.contentOfLine(lineNumber);
+    const tabSize      = kit.Document.tabSize;
     let   renderColumn = 0;
 
     for (let index = 0; index < physicalColumn; index++) {
@@ -50,8 +50,8 @@ export class Columns {
     renderColumn: number,
   ): number | null {
 
-    const lineContent = kit.Editor.contentOfLine(line);
-    const tabSize     = kit.Editor.tabSize;
+    const lineContent = kit.Document.contentOfLine(line);
+    const tabSize     = kit.Document.tabSize;
     let   counter     = renderColumn;
 
     for (let index = 0; index < lineContent.length; index++) {
@@ -72,7 +72,7 @@ export class Columns {
   // ─── Compute Column Of The Line ──────────────────────────────────────
 
   static #computeRenderColumns(line: string): number[] {
-    const tabSize = kit.Editor.tabSize;
+    const tabSize = kit.Document.tabSize;
     const results = new Array<number>();
 
     let previousCharacterWasSpace = true;
@@ -112,7 +112,7 @@ export class Columns {
       return null;
     }
 
-    const content = kit.Editor.contentOfLine(line);
+    const content = kit.Document.contentOfLine(line);
     let   buffer  = "";
 
     for (let index = physicalColumn; index < content.length; index++) {
@@ -130,7 +130,7 @@ export class Columns {
 
   static get currentWord(): string | null {
     return this.getWordAtRenderColumn(
-      kit.Editor.currentLine,
+      kit.Document.currentLine,
       this.currentRenderColumn,
     );
   }
@@ -138,28 +138,28 @@ export class Columns {
   // ─── Cursor Position ─────────────────────────────────────────────────
 
   static get physicalCursorPosition(): vscode.Position {
-    return new vscode.Position(kit.Editor.currentLine, this.currentPhysicalColumn);
+    return new vscode.Position(kit.Document.currentLine, this.currentPhysicalColumn);
   }
 
 
   // ─── Columns ─────────────────────────────────────────────────────────
 
   static get columns(): number[] {
-    return this.#computeRenderColumns(kit.Editor.contentOfTheFirstFilledLineAbove);
+    return this.#computeRenderColumns(kit.Document.contentOfTheFirstFilledLineAbove);
   }
 
   // ─── Lines With The Same Column ──────────────────────────────────────
 
   static get wordNeighborLinesRange(): [number, number] {
     const currentRenderColumn = this.currentRenderColumn;
-    const lineCount           = kit.Editor.documentLineCount;
+    const lineCount           = kit.Document.documentLineCount;
     const currentWord         = this.currentWord;
-    let   startLine           = kit.Editor.currentLine;
-    let   endLine             = kit.Editor.currentLine;
+    let   startLine           = kit.Document.currentLine;
+    let   endLine             = kit.Document.currentLine;
 
     // lines above
-    for (let lineNo = kit.Editor.currentLine; lineNo > 0; lineNo--) {
-      const columns = this.#computeRenderColumns(kit.Editor.contentOfLine(lineNo));
+    for (let lineNo = kit.Document.currentLine; lineNo > 0; lineNo--) {
+      const columns = this.#computeRenderColumns(kit.Document.contentOfLine(lineNo));
       if (columns.includes(currentRenderColumn)) {
         const word = this.getWordAtRenderColumn(lineNo, currentRenderColumn);
         if (word === currentWord) {
@@ -171,8 +171,8 @@ export class Columns {
     }
 
     // lines under
-    for (let lineNo = kit.Editor.currentLine; lineNo < lineCount; lineNo++) {
-      const columns = this.#computeRenderColumns(kit.Editor.contentOfLine(lineNo));
+    for (let lineNo = kit.Document.currentLine; lineNo < lineCount; lineNo++) {
+      const columns = this.#computeRenderColumns(kit.Document.contentOfLine(lineNo));
       if (columns.includes(currentRenderColumn)) {
         const word = this.getWordAtRenderColumn(lineNo, currentRenderColumn);
         if (word === currentWord) {
@@ -231,6 +231,6 @@ export class Columns {
       );
     }
 
-    kit.Editor.setSelections(selections);
+    kit.Actions.setSelections(selections);
   }
 }
