@@ -158,7 +158,7 @@ export class Columns {
     let endLine   = kit.Document.currentLine;
 
     // lines above
-    for (let lineNo = kit.Document.currentLine; lineNo > 0; lineNo--) {
+    for (let lineNo = kit.Document.currentLine; lineNo >= 0; lineNo--) {
       const columns = this.#computeAllRenderColumnStarts(
         kit.Document.contentOfLine(lineNo),
       );
