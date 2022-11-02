@@ -9,10 +9,16 @@ export function activate(context: vscode.ExtensionContext) {
 		context.subscriptions.push(disposable);
 	}
 
-	registerCommandHandler('pillar.moveCursorUnderNextColumn',
-		move.cursorUnderNextColumn);
-	registerCommandHandler('pillar.moveCursorUnderPreviousColumn',
-		move.cursorUnderPreviousColumn);
+	registerCommandHandler('pillar.moveCursorUnderNextColumnAbove',
+		move.cursorUnderNextColumnAbove);
+	registerCommandHandler('pillar.moveCursorUnderNextColumnBelow',
+		move.cursorUnderNextColumnBelow);
+
+	registerCommandHandler('pillar.moveCursorUnderPreviousColumnAbove',
+		move.cursorUnderPreviousColumnAbove);
+	registerCommandHandler('pillar.moveCursorUnderPreviousColumnBelow',
+		move.cursorUnderPreviousColumnBelow);
+
 	registerCommandHandler('pillar.selectAllWordNeighborLines',
 		move.selectAllWordNeighborLines);
 }

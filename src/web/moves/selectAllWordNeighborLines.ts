@@ -1,4 +1,5 @@
 import * as kit from '../kit';
+import * as vscode from 'vscode';
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 

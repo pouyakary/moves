@@ -22,11 +22,19 @@
     "contributes": {
         "commands": [
             {
-                "command":     "pillar.moveCursorUnderNextColumn",
-                "title":       "🕹️ Move Cursor under Next Column"
+                "command":     "pillar.moveCursorUnderNextColumnAbove",
+                "title":       "🕹️ Move Cursor under Next Column Above"
             },
             {
-                "command":     "pillar.moveCursorUnderPreviousColumn",
+                "command":     "pillar.moveCursorUnderNextColumnBelow",
+                "title":       "🕹️ Move Cursor under Next Column Below"
+            },
+            {
+                "command":     "pillar.moveCursorUnderPreviousColumnAbove",
+                "title":       "🕹️ Move Cursor under Previous Column"
+            },
+            {
+                "command":     "pillar.moveCursorUnderPreviousColumnBelow",
                 "title":       "🕹️ Move Cursor under Previous Column"
             },
             {
@@ -36,13 +44,23 @@
         ],
         "keybindings": [
             {
-                "command":     "pillar.moveCursorUnderNextColumn",
-                "key":         "alt+cmd+right",
+                "command":     "pillar.moveCursorUnderNextColumnAbove",
+                "key":         "cmd+alt+right",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "pillar.moveCursorUnderPreviousColumn",
-                "key":         "alt+cmd+left",
+                "command":     "pillar.moveCursorUnderNextColumnBelow",
+                "key":         "ctrl+alt+right",
+                "when":        "editorTextFocus"
+            },
+            {
+                "command":     "pillar.moveCursorUnderPreviousColumnAbove",
+                "key":         "cmd+alt+left",
+                "when":        "editorTextFocus"
+            },
+            {
+                "command":     "pillar.moveCursorUnderPreviousColumnBelow",
+                "key":         "ctrl+alt+left",
                 "when":        "editorTextFocus"
             },
             {

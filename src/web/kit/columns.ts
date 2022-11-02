@@ -10,19 +10,37 @@ export class Columns {
   }
 
   static get currentRenderColumn(): number {
-    return this.#physicalColumnToRenderColumn(
+    return this.#physicalToRender(
       kit.Document.currentLine,
-      this.currentPhysicalColumn,
+      kit.Document.currentColumn
     );
+  }
 
+  // ─── Count Tabs Algorithm ────────────────────────────────────────────
+
+  static #computeRenderTextSize(text: string) {
+    const characters   = [...text];
+    const tabSize      = kit.Document.tabSize;
+    let   renderColumn = 0;
+
+    for (let index = 0; index < characters.length; index++) {
+      // This is very important. Tabs are stopping at columns of their
+      // ratio. Say when you are at column 10, tab size is 4, the nearest
+      // divisor of 4 is 12, therefore the tab stops at column 12 not 14.
+      if (characters[index] === '\t') {
+        const remainder = (renderColumn + 1) / tabSize;
+        renderColumn += tabSize - remainder;
+      } else {
+        renderColumn++;
+      }
+    }
+
+    return renderColumn;
   }
 
   // ─── Current Render Column ───────────────────────────────────────────
 
-  static #physicalColumnToRenderColumn(
-    lineNumber:     number,
-    physicalColumn: number,
-  ) {
+  static #physicalToRender(lineNumber: number, physicalColumn: number) {
     const content      = kit.Document.contentOfLine(lineNumber);
     const tabSize      = kit.Document.tabSize;
     let   renderColumn = 0;
@@ -32,9 +50,8 @@ export class Columns {
       // ratio. Say when you are at column 10, tab size is 4, the nearest
       // divisor of 4 is 12, therefore the tab stops at column 12 not 14.
       if (content[index] === '\t') {
-        const remainder                     = renderColumn % tabSize;
-        const additionalSpaceToMakeWholeTab = tabSize - remainder;
-        renderColumn += additionalSpaceToMakeWholeTab;
+        const remainder = (renderColumn + 1) / tabSize;
+        renderColumn += tabSize - remainder;
       } else {
         renderColumn++;
       }
@@ -45,7 +62,7 @@ export class Columns {
 
   // ─── Convert Render Column To Physical Column In Line ────────────────
 
-  static #renderColumnToPhysicalColumn(
+  static #renderToPhysical(
     line:         number,
     renderColumn: number,
   ): number | null {
@@ -59,8 +76,8 @@ export class Columns {
         return index;
       }
       if (lineContent[index] === '\t') {
-        const remainder = counter % tabSize;
-        counter -= tabSize - remainder;
+        const remainder = (counter + 1) / tabSize;
+        counter += tabSize - remainder;
       } else {
         counter--;
       }
@@ -71,7 +88,7 @@ export class Columns {
 
   // ─── Compute Column Of The Line ──────────────────────────────────────
 
-  static #computeRenderColumns(line: string): number[] {
+  static #computeAllRenderColumnStarts(line: string): number[] {
     const tabSize = kit.Document.tabSize;
     const results = new Array<number>();
 
@@ -86,7 +103,7 @@ export class Columns {
       }
 
       if (character === '\t') {
-        const remainder = visualColumnCount % tabSize;
+        const remainder = (visualColumnCount + 1) / tabSize;
         visualColumnCount += tabSize - remainder;
       } else {
         visualColumnCount++;
@@ -104,10 +121,7 @@ export class Columns {
     line:         number,
     renderColumn: number,
   ): string | null {
-    const physicalColumn = this.#renderColumnToPhysicalColumn(
-      line,
-      renderColumn,
-    );
+    const physicalColumn = this.#renderToPhysical(line, renderColumn);
     if (physicalColumn === null) {
       return null;
     }
@@ -142,10 +156,20 @@ export class Columns {
   }
 
 
-  // ─── Columns ─────────────────────────────────────────────────────────
+  // ─── Columns Above ───────────────────────────────────────────────────
 
-  static get columns(): number[] {
-    return this.#computeRenderColumns(kit.Document.contentOfTheFirstFilledLineAbove);
+  static get columnsAbove(): number[] {
+    return this.#computeAllRenderColumnStarts(
+      kit.Document.contentOfTheFirstFilledLineAbove,
+    );
+  }
+
+  // ─── Columns Below ───────────────────────────────────────────────────
+
+  static get columnsBelow(): number[] {
+    return this.#computeAllRenderColumnStarts(
+      kit.Document.contentOfTheFirstFilledLineBelow,
+    );
   }
 
   // ─── Lines With The Same Column ──────────────────────────────────────
@@ -159,7 +183,9 @@ export class Columns {
 
     // lines above
     for (let lineNo = kit.Document.currentLine; lineNo > 0; lineNo--) {
-      const columns = this.#computeRenderColumns(kit.Document.contentOfLine(lineNo));
+      const columns = this.#computeAllRenderColumnStarts(
+        kit.Document.contentOfLine(lineNo),
+      );
       if (columns.includes(currentRenderColumn)) {
         const word = this.getWordAtRenderColumn(lineNo, currentRenderColumn);
         if (word === currentWord) {
@@ -172,7 +198,9 @@ export class Columns {
 
     // lines under
     for (let lineNo = kit.Document.currentLine; lineNo < lineCount; lineNo++) {
-      const columns = this.#computeRenderColumns(kit.Document.contentOfLine(lineNo));
+      const columns = this.#computeAllRenderColumnStarts(
+        kit.Document.contentOfLine(lineNo)
+      );
       if (columns.includes(currentRenderColumn)) {
         const word = this.getWordAtRenderColumn(lineNo, currentRenderColumn);
         if (word === currentWord) {
@@ -186,23 +214,47 @@ export class Columns {
     return [startLine, endLine];
   }
 
-  // ─── Next Column ─────────────────────────────────────────────────────
+  // ─── Next Column Above ───────────────────────────────────────────────
 
-  static get nextRenderColumn(): number {
-    const { columns, currentPhysicalColumn: currentColumn } = this;
-    for (const column of columns) {
-      if (column > currentColumn) {
+  static get nextRenderColumnAbove(): number {
+    const { columnsAbove, currentPhysicalColumn } = this;
+    for (const column of columnsAbove) {
+      if (column > currentPhysicalColumn) {
         return column;
       }
     }
-    return currentColumn;
+    return currentPhysicalColumn;
   }
 
-  // ─── Previous Column ─────────────────────────────────────────────────
+  // ─── Next Column Below ───────────────────────────────────────────────
 
-  static get previousRenderColumn(): number {
-    const { columns, currentPhysicalColumn } = this;
-    for (const column of columns.reverse()) {
+  static get nextRenderColumnBelow(): number {
+    const { columnsBelow, currentPhysicalColumn } = this;
+    for (const column of columnsBelow) {
+      if (column > currentPhysicalColumn) {
+        return column;
+      }
+    }
+    return currentPhysicalColumn;
+  }
+
+  // ─── Previous Column Above ───────────────────────────────────────────
+
+  static get previousRenderColumnAbove(): number {
+    const { columnsAbove, currentPhysicalColumn } = this;
+    for (const column of columnsAbove.reverse()) {
+      if (column < currentPhysicalColumn) {
+        return column;
+      }
+    }
+    return currentPhysicalColumn;
+  }
+
+  // ─── Previous Column Below ───────────────────────────────────────────
+
+  static get previousRenderColumnBelow(): number {
+    const { columnsBelow, currentPhysicalColumn } = this;
+    for (const column of columnsBelow.reverse()) {
       if (column < currentPhysicalColumn) {
         return column;
       }
@@ -219,14 +271,14 @@ export class Columns {
     const currentRenderColumn = this.currentRenderColumn;
     const selections          = new Array<vscode.Selection>();
 
-    for (let lineNumber = startingLine; lineNumber <= endLine; lineNumber++) {
-      const physicalColumn = this.#renderColumnToPhysicalColumn(
-        lineNumber,
-        currentRenderColumn,
+    for (let lineNo = startingLine; lineNo <= endLine; lineNo++) {
+      const physicalColumn = this.#renderToPhysical(
+        lineNo,
+        currentRenderColumn
       );
       selections.push(
         new vscode.Selection(
-          lineNumber, physicalColumn!, lineNumber, physicalColumn!,
+          lineNo, physicalColumn!, lineNo, physicalColumn!,
         ),
       );
     }

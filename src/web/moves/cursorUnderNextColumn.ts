@@ -1,9 +1,18 @@
 import * as kit from '../kit';
 
+// ─── Move To The Next Column ───────────────────────────────────────────── ✣ ─
+
+export async function cursorUnderNextColumnAbove() {
+  await moveToNextColumn(kit.Columns.nextRenderColumnAbove);
+}
+
+export async function cursorUnderNextColumnBelow() {
+  await moveToNextColumn(kit.Columns.nextRenderColumnBelow);
+}
+
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
-export async function cursorUnderNextColumn() {
-  const nextColumn        = kit.Columns.nextRenderColumn;
+async function moveToNextColumn(nextColumn: number) {
   const currentColumn     = kit.Columns.currentPhysicalColumn;
   const delta             = nextColumn - currentColumn;
   const additionalSpaces  = ' '.repeat(delta);

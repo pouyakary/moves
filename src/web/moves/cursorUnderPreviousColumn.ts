@@ -1,10 +1,19 @@
 import * as kit from '../kit';
 
+// ─── Move To The Previous Column ───────────────────────────────────────── ✣ ─
+
+export async function cursorUnderPreviousColumnAbove() {
+  await moveCursorUnderPreviousColumn(kit.Columns.previousRenderColumnBelow);
+}
+
+export async function cursorUnderPreviousColumnBelow() {
+  await moveCursorUnderPreviousColumn(kit.Columns.previousRenderColumnBelow);
+}
+
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
-export async function cursorUnderPreviousColumn() {
+async function moveCursorUnderPreviousColumn(previousColumns: number) {
   const currentColumn     = kit.Columns.currentPhysicalColumn;
-  const previousColumns   = kit.Columns.previousRenderColumn;
   const isTextWhitespace  = isSpaceBetweenTwoColumnsErasable(
     previousColumns, currentColumn,
   );

@@ -53,6 +53,22 @@ export class Document {
     return '';
   }
 
+  // ─── Get The Downer Line ─────────────────────────────────────────────
+
+  static get contentOfTheFirstFilledLineBelow(): string {
+    if (this.currentLine === 0) {
+      return '';
+    }
+
+    const lineCount = this.documentLineCount;
+    for (let index = this.currentLine + 1; index < lineCount; index++) {
+      if (this.#lineIsNotEmptyAt(index)) {
+        return this.contentOfLine(index);
+      }
+    }
+    return '';
+  }
+
   // ─── Current Line ────────────────────────────────────────────────────
 
   static get currentLineContent(): string {
