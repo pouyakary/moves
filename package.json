@@ -1,12 +1,12 @@
 {
     "browser":         "./dist/web/extension.js",
     "description":     "Moves your cursor under the columns in the above line",
-    "displayName":     "Mice Moves",
+    "displayName":     "Moves",
     "icon":            "icon.png",
     "name":            "moves",
     "preview":         true,
     "publisher":       "karyfoundation",
-    "version":         "3.0.3",
+    "version":         "1.0.0",
     "repository": {
         "git":     "https://github.com/pouyakary/moves.git"
     },
@@ -22,49 +22,49 @@
     "contributes": {
         "commands": [
             {
-                "command":     "micemoves.moveCursorUnderNextColumnAbove",
+                "command":     "moves.moveCursorUnderNextColumnAbove",
                 "title":       "🕹️ Move Cursor under Next Column Above"
             },
             {
-                "command":     "micemoves.moveCursorUnderNextColumnBelow",
+                "command":     "moves.moveCursorUnderNextColumnBelow",
                 "title":       "🕹️ Move Cursor over Next Column Below"
             },
             {
-                "command":     "micemoves.moveCursorUnderPreviousColumnAbove",
+                "command":     "moves.moveCursorUnderPreviousColumnAbove",
                 "title":       "🕹️ Move Cursor under Previous Column Above"
             },
             {
-                "command":     "micemoves.moveCursorUnderPreviousColumnBelow",
+                "command":     "moves.moveCursorUnderPreviousColumnBelow",
                 "title":       "🕹️ Move Cursor over Previous Column Below"
             },
             {
-                "command":     "micemoves.selectAllWordNeighborLines",
+                "command":     "moves.selectAllWordNeighborLines",
                 "title":       "🗜️ Add Cursor to all Neighbor Lines"
             }
         ],
         "keybindings": [
             {
-                "command":     "micemoves.moveCursorUnderNextColumnAbove",
+                "command":     "moves.moveCursorUnderNextColumnAbove",
                 "key":         "cmd+alt+right",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "micemoves.moveCursorUnderNextColumnBelow",
+                "command":     "moves.moveCursorUnderNextColumnBelow",
                 "key":         "ctrl+alt+right",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "micemoves.moveCursorUnderPreviousColumnAbove",
+                "command":     "moves.moveCursorUnderPreviousColumnAbove",
                 "key":         "cmd+alt+left",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "micemoves.moveCursorUnderPreviousColumnBelow",
+                "command":     "moves.moveCursorUnderPreviousColumnBelow",
                 "key":         "ctrl+alt+left",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "micemoves.selectAllWordNeighborLines",
+                "command":     "moves.selectAllWordNeighborLines",
                 "key":         "alt+cmd+a",
                 "when":        "editorTextFocus"
             }
@@ -72,7 +72,7 @@
         "menus": {
             "editor/context": [
                 {
-                    "command":     "micemoves.selectAllWordNeighborLines"
+                    "command":     "moves.selectAllWordNeighborLines"
                 }
             ]
         }
