@@ -1,5 +1,5 @@
-import * as vscode	from 'vscode';
-import * as move 		from './moves';
+import * as vscode  from 'vscode';
+import * as actions from './actions';
 
 // ─── Activate ──────────────────────────────────────────────────────────── ✣ ─
 
@@ -10,17 +10,17 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	registerCommandHandler('pillar.moveCursorUnderNextColumnAbove',
-		move.cursorUnderNextColumnAbove);
+		actions.cursorUnderNextColumnAbove);
 	registerCommandHandler('pillar.moveCursorUnderNextColumnBelow',
-		move.cursorUnderNextColumnBelow);
+		actions.cursorUnderNextColumnBelow);
 
 	registerCommandHandler('pillar.moveCursorUnderPreviousColumnAbove',
-		move.cursorUnderPreviousColumnAbove);
+		actions.cursorUnderPreviousColumnAbove);
 	registerCommandHandler('pillar.moveCursorUnderPreviousColumnBelow',
-		move.cursorUnderPreviousColumnBelow);
+		actions.cursorUnderPreviousColumnBelow);
 
 	registerCommandHandler('pillar.selectAllWordNeighborLines',
-		move.addCursorToAllNeighborLines);
+		actions.addCursorToAllNeighborLines);
 }
 
 // ─── Deactivate ────────────────────────────────────────────────────────── ✣ ─
