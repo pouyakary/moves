@@ -1,14 +1,14 @@
 {
     "browser":         "./dist/web/extension.js",
     "description":     "Moves your cursor under the columns in the above line",
-    "displayName":     "Pillars",
+    "displayName":     "Mice Moves",
     "icon":            "icon.png",
-    "name":            "pillar",
+    "name":            "moves",
     "preview":         true,
     "publisher":       "karyfoundation",
     "version":         "3.0.3",
     "repository": {
-        "git":     "https://github.com/pouyakary/pillar.git"
+        "git":     "https://github.com/pouyakary/moves.git"
     },
     "engines": {
         "vscode":      "^1.72.0"
@@ -22,49 +22,49 @@
     "contributes": {
         "commands": [
             {
-                "command":     "pillar.moveCursorUnderNextColumnAbove",
+                "command":     "micemoves.moveCursorUnderNextColumnAbove",
                 "title":       "🕹️ Move Cursor under Next Column Above"
             },
             {
-                "command":     "pillar.moveCursorUnderNextColumnBelow",
+                "command":     "micemoves.moveCursorUnderNextColumnBelow",
                 "title":       "🕹️ Move Cursor over Next Column Below"
             },
             {
-                "command":     "pillar.moveCursorUnderPreviousColumnAbove",
+                "command":     "micemoves.moveCursorUnderPreviousColumnAbove",
                 "title":       "🕹️ Move Cursor under Previous Column Above"
             },
             {
-                "command":     "pillar.moveCursorUnderPreviousColumnBelow",
+                "command":     "micemoves.moveCursorUnderPreviousColumnBelow",
                 "title":       "🕹️ Move Cursor over Previous Column Below"
             },
             {
-                "command":     "pillar.selectAllWordNeighborLines",
+                "command":     "micemoves.selectAllWordNeighborLines",
                 "title":       "🗜️ Add Cursor to all Neighbor Lines"
             }
         ],
         "keybindings": [
             {
-                "command":     "pillar.moveCursorUnderNextColumnAbove",
+                "command":     "micemoves.moveCursorUnderNextColumnAbove",
                 "key":         "cmd+alt+right",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "pillar.moveCursorUnderNextColumnBelow",
+                "command":     "micemoves.moveCursorUnderNextColumnBelow",
                 "key":         "ctrl+alt+right",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "pillar.moveCursorUnderPreviousColumnAbove",
+                "command":     "micemoves.moveCursorUnderPreviousColumnAbove",
                 "key":         "cmd+alt+left",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "pillar.moveCursorUnderPreviousColumnBelow",
+                "command":     "micemoves.moveCursorUnderPreviousColumnBelow",
                 "key":         "ctrl+alt+left",
                 "when":        "editorTextFocus"
             },
             {
-                "command":     "pillar.selectAllWordNeighborLines",
+                "command":     "micemoves.selectAllWordNeighborLines",
                 "key":         "alt+cmd+a",
                 "when":        "editorTextFocus"
             }
@@ -72,7 +72,7 @@
         "menus": {
             "editor/context": [
                 {
-                    "command":     "pillar.selectAllWordNeighborLines"
+                    "command":     "micemoves.selectAllWordNeighborLines"
                 }
             ]
         }
