@@ -6,7 +6,7 @@
     "name":            "pillar",
     "preview":         true,
     "publisher":       "karyfoundation",
-    "version":         "3.0.2",
+    "version":         "3.0.3",
     "repository": {
         "git":     "https://github.com/pouyakary/pillar.git"
     },
