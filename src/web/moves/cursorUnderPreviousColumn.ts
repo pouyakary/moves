@@ -3,7 +3,7 @@ import * as kit from '../kit';
 // ─── Move To The Previous Column ───────────────────────────────────────── ✣ ─
 
 export async function cursorUnderPreviousColumnAbove() {
-  await moveCursorUnderPreviousColumn(kit.Columns.previousRenderColumnBelow);
+  await moveCursorUnderPreviousColumn(kit.Columns.previousRenderColumnAbove);
 }
 
 export async function cursorUnderPreviousColumnBelow() {
