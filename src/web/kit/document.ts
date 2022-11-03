@@ -56,7 +56,7 @@ export class Document {
   // ─── Get The Downer Line ─────────────────────────────────────────────
 
   static get contentOfTheFirstFilledLineBelow(): string {
-    if (this.currentLine === 0) {
+    if (this.currentLine === this.documentLineCount - 1) {
       return '';
     }
 
