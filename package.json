@@ -6,7 +6,7 @@
     "name":            "moves",
     "preview":         true,
     "publisher":       "karyfoundation",
-    "version":         "1.0.0",
+    "version":         "1.0.1",
     "repository": {
         "git":     "https://github.com/pouyakary/moves.git"
     },
