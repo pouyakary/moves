@@ -17,7 +17,7 @@ async function moveToNextColumn(nextColumn: number) {
   const delta             = nextColumn - currentColumn;
   const additionalSpaces  = ' '.repeat(delta);
 
-  await kit.Actions.insertAt(
+  await kit.actions.insertAt(
     kit.columns.getPhysicalCursorPosition(),
     additionalSpaces,
   );

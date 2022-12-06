@@ -4,22 +4,22 @@ import * as kit    from '.';
 // ─── Position ────────────────────────────────────────────────────────
 
 export function getCurrentPhysicalColumn(): number {
-  return kit.Document.currentColumn;
+  return kit.document.getCurrentColumn();
 }
 
 export function getCurrentRenderColumn(): number {
   return physicalToRender(
-    kit.Document.currentLine,
-    kit.Document.currentColumn
+    kit.document.getCurrentLine(),
+    kit.document.getCurrentColumn(),
   );
 }
 
 // ─── Current Render Column ───────────────────────────────────────────
 
 export function physicalToRender(lineNumber: number, physicalColumn: number) {
-  const content      = kit.Document.contentOfLine(lineNumber);
+  const content      = kit.document.contentOfLine(lineNumber);
   const characters   = [...content];
-  const tabSize      = kit.Document.tabSize;
+  const tabSize      = kit.document.getTabSize();
   let   renderColumn = 0;
 
   for (let index = 0; index < physicalColumn; index++) {
@@ -44,9 +44,9 @@ export function renderToPhysical(
   expectedColumn: number,
 ): number | null {
 
-  const lineContent  = kit.Document.contentOfLine(line);
+  const lineContent  = kit.document.contentOfLine(line);
   const characters   = [...lineContent];
-  const tabSize      = kit.Document.tabSize;
+  const tabSize      = kit.document.getTabSize();
   let   renderColumn = 0;
 
   for (let index = 0; index < characters.length; index++) {
@@ -67,7 +67,7 @@ export function renderToPhysical(
 // ─── Compute Column Of The Line ──────────────────────────────────────
 
 export function computeAllRenderColumnStarts(line: string): number[] {
-  const tabSize = kit.Document.tabSize;
+  const tabSize = kit.document.getTabSize();
   const results = new Array<number>();
 
   let previousCharacterWasSpace = true;
@@ -104,7 +104,7 @@ export function getCharacterAtRenderColumn(
     return null;
   }
 
-  const content = kit.Document.contentOfLine(line);
+  const content = kit.document.contentOfLine(line);
 
   return content[physicalColumn];
 }
@@ -113,7 +113,7 @@ export function getCharacterAtRenderColumn(
 
 export function getCurrentCharacter(): string | null {
   return getCharacterAtRenderColumn(
-    kit.Document.currentLine,
+    kit.document.getCurrentLine(),
     getCurrentRenderColumn(),
   );
 }
@@ -122,14 +122,14 @@ export function getCurrentCharacter(): string | null {
 // ─── Cursor Position ─────────────────────────────────────────────────
 
 export function getPhysicalCursorPosition(): vscode.Position {
-  return new vscode.Position(kit.Document.currentLine, getCurrentPhysicalColumn());
+  return new vscode.Position(kit.document.getCurrentLine(), getCurrentPhysicalColumn());
 }
 
 // ─── Columns Above ───────────────────────────────────────────────────
 
 export function getColumnsAbove(): number[] {
   return computeAllRenderColumnStarts(
-    kit.Document.contentOfTheFirstFilledLineAbove,
+    kit.document.getContentOfTheFirstFilledLineAbove(),
   );
 }
 
@@ -137,7 +137,7 @@ export function getColumnsAbove(): number[] {
 
 export function getColumnsBelow(): number[] {
   return computeAllRenderColumnStarts(
-    kit.Document.contentOfTheFirstFilledLineBelow,
+    kit.document.getContentOfTheFirstFilledLineBelow(),
   );
 }
 
@@ -145,20 +145,20 @@ export function getColumnsBelow(): number[] {
 
 export function getNeighborLinesOfCurrentRenderColumn(): [number, number] | null {
   const currentRenderColumn = getCurrentRenderColumn;
-  const lineCount           = kit.Document.documentLineCount;
+  const lineCount           = kit.document.getDocumentLineCount();
   const currentCharacter    = getCurrentCharacter;
 
   if (currentCharacter === null) {
     return null;
   }
 
-  let startLine = kit.Document.currentLine;
-  let endLine   = kit.Document.currentLine;
+  let startLine = kit.document.getCurrentLine();
+  let endLine   = kit.document.getCurrentLine();
 
   // lines above
-  for (let lineNo = kit.Document.currentLine; lineNo >= 0; lineNo--) {
+  for (let lineNo = kit.document.getCurrentLine(); lineNo >= 0; lineNo--) {
     const columns = computeAllRenderColumnStarts(
-      kit.Document.contentOfLine(lineNo),
+      kit.document.contentOfLine(lineNo),
     );
     if (columns.includes(currentRenderColumn())) {
       const character = getCharacterAtRenderColumn(
@@ -174,9 +174,9 @@ export function getNeighborLinesOfCurrentRenderColumn(): [number, number] | null
   }
 
   // lines under
-  for (let lineNo = kit.Document.currentLine; lineNo < lineCount; lineNo++) {
+  for (let lineNo = kit.document.getCurrentLine(); lineNo < lineCount; lineNo++) {
     const columns = computeAllRenderColumnStarts(
-      kit.Document.contentOfLine(lineNo)
+      kit.document.contentOfLine(lineNo)
     );
     if (columns.includes(currentRenderColumn())) {
       const word = getCharacterAtRenderColumn(lineNo, currentRenderColumn());
@@ -256,5 +256,5 @@ export function putCursorsInLinesRangeWithCurrentColumn(
     );
   }
 
-  kit.Actions.setSelections(selections);
+  kit.actions.setSelections(selections);
 }

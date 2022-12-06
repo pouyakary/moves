@@ -1,84 +1,82 @@
 import * as vscode from 'vscode';
 
-export class Document {
+// ─── Editor ──────────────────────────────────────────────────────────
 
-  // ─── Editor ──────────────────────────────────────────────────────────
-
-  static get #editor() {
-    return vscode.window.activeTextEditor!;
-  }
-
-  // ─── Document Size ───────────────────────────────────────────────────
-
-  static get documentLineCount(): number {
-    return this.#editor.document.lineCount;
-  }
-
-  // ─── Position ────────────────────────────────────────────────────────
-
-  static get currentLine(): number {
-    return this.#editor.selection.active.line;
-  }
-
-  static get currentColumn(): number {
-    return this.#editor.selection.active.character;
-  }
-
-  // ─── Tab Size ────────────────────────────────────────────────────────
-
-  static get tabSize(): number {
-    const editorTabSetting = this.#editor.options.tabSize;
-    const currentTabSize   = typeof editorTabSetting === 'number'
-                             ? editorTabSetting : 2;
-    return currentTabSize;
-  }
-
-  // ─── Get Line At ─────────────────────────────────────────────────────
-
-  static contentOfLine(line: number): string {
-    return this.#editor.document.lineAt(line).text;
-  }
-
-  // ─── Get The Upper Line ──────────────────────────────────────────────
-
-  static get contentOfTheFirstFilledLineAbove(): string {
-    if (this.currentLine === 0) {
-      return '';
-    }
-    for (let index = this.currentLine - 1; index >= 0; index--) {
-      if (this.#lineIsNotEmptyAt(index)) {
-        return this.contentOfLine(index);
-      }
-    }
-    return '';
-  }
-
-  // ─── Get The Downer Line ─────────────────────────────────────────────
-
-  static get contentOfTheFirstFilledLineBelow(): string {
-    if (this.currentLine === this.documentLineCount - 1) {
-      return '';
-    }
-
-    const lineCount = this.documentLineCount;
-    for (let index = this.currentLine + 1; index < lineCount; index++) {
-      if (this.#lineIsNotEmptyAt(index)) {
-        return this.contentOfLine(index);
-      }
-    }
-    return '';
-  }
-
-  // ─── Current Line ────────────────────────────────────────────────────
-
-  static get currentLineContent(): string {
-    return this.contentOfLine(this.currentLine);
-  }
-
-
-  // ─── Is Line Not Empty ───────────────────────────────────────────────
-
-  static #lineIsNotEmptyAt(line: number): boolean {
-    return /^\s*$/.test(Document.contentOfLine(line)) === false;
-  }
+function getEditor() {
+  return vscode.window.activeTextEditor!;
 }
+
+// ─── Document Size ───────────────────────────────────────────────────
+
+export function getDocumentLineCount(): number {
+  return getEditor().document.lineCount;
+}
+
+// ─── Position ────────────────────────────────────────────────────────
+
+export function getCurrentLine(): number {
+  return getEditor().selection.active.line;
+}
+
+export function getCurrentColumn(): number {
+  return getEditor().selection.active.character;
+}
+
+// ─── Tab Size ────────────────────────────────────────────────────────
+
+export function getTabSize(): number {
+  const editorTabSetting = getEditor().options.tabSize;
+  const currentTabSize   = typeof editorTabSetting === 'number'
+                            ? editorTabSetting : 2;
+  return currentTabSize;
+}
+
+// ─── Get Line At ─────────────────────────────────────────────────────
+
+export function contentOfLine(line: number): string {
+  return getEditor().document.lineAt(line).text;
+}
+
+// ─── Get The Upper Line ──────────────────────────────────────────────
+
+export function getContentOfTheFirstFilledLineAbove(): string {
+  if (getCurrentLine() === 0) {
+    return '';
+  }
+  for (let index = getCurrentLine() - 1; index >= 0; index--) {
+    if (lineIsNotEmptyAt(index)) {
+      return contentOfLine(index);
+    }
+  }
+  return '';
+}
+
+// ─── Get The Downer Line ─────────────────────────────────────────────
+
+export function getContentOfTheFirstFilledLineBelow(): string {
+  if (getCurrentLine() === getDocumentLineCount() - 1) {
+    return '';
+  }
+
+  const lineCount = getDocumentLineCount();
+  for (let index = getCurrentLine() + 1; index < lineCount; index++) {
+    if (lineIsNotEmptyAt(index)) {
+      return contentOfLine(index);
+    }
+  }
+  return '';
+}
+
+// ─── Current Line ────────────────────────────────────────────────────
+
+export function getCurrentLineContent(): string {
+  return contentOfLine(getCurrentLine());
+}
+
+
+// ─── Is Line Not Empty ───────────────────────────────────────────────
+
+function lineIsNotEmptyAt(line: number): boolean {
+  return /^\s*$/.test(contentOfLine(line)) === false;
+}
+
