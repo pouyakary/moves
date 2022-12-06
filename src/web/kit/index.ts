@@ -1,3 +1,3 @@
 export * from './actions';
-export * from './columns';
+export * as columns from './columns';
 export * from './document';

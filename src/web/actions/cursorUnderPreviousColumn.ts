@@ -3,17 +3,17 @@ import * as kit from '../kit';
 // ─── Move To The Previous Column ───────────────────────────────────────── ✣ ─
 
 export async function cursorUnderPreviousColumnAbove() {
-  await moveCursorUnderPreviousColumn(kit.Columns.previousRenderColumnAbove);
+  await moveCursorUnderPreviousColumn(kit.columns.getPreviousRenderColumnAbove());
 }
 
 export async function cursorUnderPreviousColumnBelow() {
-  await moveCursorUnderPreviousColumn(kit.Columns.previousRenderColumnBelow);
+  await moveCursorUnderPreviousColumn(kit.columns.getPreviousRenderColumnBelow());
 }
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
 async function moveCursorUnderPreviousColumn(previousColumns: number) {
-  const currentColumn     = kit.Columns.currentPhysicalColumn;
+  const currentColumn     = kit.columns.getCurrentPhysicalColumn();
   const isTextWhitespace  = isSpaceBetweenTwoColumnsErasable(
     previousColumns, currentColumn,
   );

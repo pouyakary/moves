@@ -4,12 +4,12 @@ import * as vscode from 'vscode';
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
 export async function addCursorToAllNeighborLines() {
-  const linesRange = kit.Columns.neighborLinesOfCurrentRenderColumn;
+  const linesRange = kit.columns.getNeighborLinesOfCurrentRenderColumn();
   if (linesRange === null || linesRange[0] === linesRange[1]) {
     showNothingToSelectIndicator();
     return;
   }
-  kit.Columns.putCursorsInLinesRangeWithCurrentColumn(...linesRange);
+  kit.columns.putCursorsInLinesRangeWithCurrentColumn(...linesRange);
 }
 
 // ─── Nothing To Select Indicator ───────────────────────────────────────── ✣ ─
