@@ -3,7 +3,11 @@ import * as vscode from 'vscode';
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
-export async function addCursorToAllNeighborLines() {
+// Adds the cursor to all the lines that
+// share the same.
+export
+async function
+addCursorToAllNeighborLines() {
   const linesRange = kit.columns.getNeighborLinesOfCurrentRenderColumn();
   if (linesRange === null || linesRange[0] === linesRange[1]) {
     showNothingToSelectIndicator();
@@ -14,7 +18,8 @@ export async function addCursorToAllNeighborLines() {
 
 // ─── Nothing To Select Indicator ───────────────────────────────────────── ✣ ─
 
-function showNothingToSelectIndicator() {
+function
+showNothingToSelectIndicator() {
   const showTime      = 400;
   const statusbarItem = vscode.window.createStatusBarItem();
   statusbarItem.text  = "●";

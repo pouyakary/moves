@@ -3,11 +3,15 @@ import * as kit    from '.';
 
 // ─── Position ────────────────────────────────────────────────────────
 
-export function getCurrentPhysicalColumn(): number {
+export
+function
+getCurrentPhysicalColumn(): number {
   return kit.document.getCurrentColumn();
 }
 
-export function getCurrentRenderColumn(): number {
+export
+function
+getCurrentRenderColumn(): number {
   return physicalToRender(
     kit.document.getCurrentLine(),
     kit.document.getCurrentColumn(),
@@ -16,16 +20,21 @@ export function getCurrentRenderColumn(): number {
 
 // ─── Current Render Column ───────────────────────────────────────────
 
-export function physicalToRender(lineNumber: number, physicalColumn: number) {
+export
+function
+physicalToRender(lineNumber: number, physicalColumn: number) {
   const content      = kit.document.contentOfLine(lineNumber);
   const characters   = [...content];
   const tabSize      = kit.document.getTabSize();
   let   renderColumn = 0;
 
   for (let index = 0; index < physicalColumn; index++) {
-    // This is very important. Tabs are stopping at columns of their
-    // ratio. Say when you are at column 10, tab size is 4, the nearest
-    // divisor of 4 is 12, therefore the tab stops at column 12 not 14.
+    // This is very important. Tabs are
+    // stopping at columns of their ratio. Say
+    // when you are at column 10, tab size is
+    // 4, the nearest divisor of 4 is 12,
+    // therefore the tab stops at column 12 not
+    // 14.
     if (characters[index] === '\t') {
       const remainder = (renderColumn + 1) % tabSize;
       renderColumn += tabSize - remainder + 1;
@@ -39,7 +48,9 @@ export function physicalToRender(lineNumber: number, physicalColumn: number) {
 
 // ─── Convert Render Column To Physical Column In Line ────────────────
 
-export function renderToPhysical(
+export
+function
+renderToPhysical(
   line:           number,
   expectedColumn: number,
 ): number | null {
@@ -66,7 +77,9 @@ export function renderToPhysical(
 
 // ─── Compute Column Of The Line ──────────────────────────────────────
 
-export function computeAllRenderColumnStarts(line: string): number[] {
+export
+function
+computeAllRenderColumnStarts(line: string): number[] {
   const tabSize = kit.document.getTabSize();
   const results = new Array<number>();
 
@@ -95,7 +108,9 @@ export function computeAllRenderColumnStarts(line: string): number[] {
 
 // ─── Word At ─────────────────────────────────────────────────────────
 
-export function getCharacterAtRenderColumn(
+export
+function
+getCharacterAtRenderColumn(
   line:         number,
   renderColumn: number,
 ): string | null {
@@ -111,7 +126,9 @@ export function getCharacterAtRenderColumn(
 
 // ─── Current Character ───────────────────────────────────────────────
 
-export function getCurrentCharacter(): string | null {
+export
+function
+getCurrentCharacter(): string | null {
   return getCharacterAtRenderColumn(
     kit.document.getCurrentLine(),
     getCurrentRenderColumn(),
@@ -121,13 +138,17 @@ export function getCurrentCharacter(): string | null {
 
 // ─── Cursor Position ─────────────────────────────────────────────────
 
-export function getPhysicalCursorPosition(): vscode.Position {
+export
+function
+getPhysicalCursorPosition(): vscode.Position {
   return new vscode.Position(kit.document.getCurrentLine(), getCurrentPhysicalColumn());
 }
 
 // ─── Columns Above ───────────────────────────────────────────────────
 
-export function getColumnsAbove(): number[] {
+export
+function
+getColumnsAbove(): number[] {
   return computeAllRenderColumnStarts(
     kit.document.getContentOfTheFirstFilledLineAbove(),
   );
@@ -135,7 +156,9 @@ export function getColumnsAbove(): number[] {
 
 // ─── Columns Below ───────────────────────────────────────────────────
 
-export function getColumnsBelow(): number[] {
+export
+function
+getColumnsBelow(): number[] {
   return computeAllRenderColumnStarts(
     kit.document.getContentOfTheFirstFilledLineBelow(),
   );
@@ -143,7 +166,9 @@ export function getColumnsBelow(): number[] {
 
 // ─── Lines With The Same Column ──────────────────────────────────────
 
-export function getNeighborLinesOfCurrentRenderColumn(): [number, number] | null {
+export
+function
+getNeighborLinesOfCurrentRenderColumn(): [number, number] | null {
   const currentRenderColumn = getCurrentRenderColumn;
   const lineCount           = kit.document.getDocumentLineCount();
   const currentCharacter    = getCurrentCharacter;
@@ -193,7 +218,9 @@ export function getNeighborLinesOfCurrentRenderColumn(): [number, number] | null
 
 // ─── Next Column Above ───────────────────────────────────────────────
 
-export function geNextRenderColumnAbove(): number {
+export
+function
+geNextRenderColumnAbove(): number {
   for (const column of getColumnsAbove()) {
     if (column > getCurrentPhysicalColumn()) {
       return column;
@@ -204,7 +231,9 @@ export function geNextRenderColumnAbove(): number {
 
 // ─── Next Column Below ───────────────────────────────────────────────
 
-export function getNextRenderColumnBelow(): number {
+export
+function
+getNextRenderColumnBelow(): number {
   for (const column of getColumnsBelow()) {
     if (column > getCurrentPhysicalColumn()) {
       return column;
@@ -215,7 +244,9 @@ export function getNextRenderColumnBelow(): number {
 
 // ─── Previous Column Above ───────────────────────────────────────────
 
-export function getPreviousRenderColumnAbove(): number {
+export
+function
+getPreviousRenderColumnAbove(): number {
   for (const column of getColumnsAbove().reverse()) {
     if (column < getCurrentPhysicalColumn()) {
       return column;
@@ -226,7 +257,9 @@ export function getPreviousRenderColumnAbove(): number {
 
 // ─── Previous Column Below ───────────────────────────────────────────
 
-export function getPreviousRenderColumnBelow(): number {
+export
+function
+getPreviousRenderColumnBelow(): number {
   for (const column of getColumnsBelow().reverse()) {
     if (column < getCurrentPhysicalColumn()) {
       return column;
@@ -237,7 +270,9 @@ export function getPreviousRenderColumnBelow(): number {
 
 // ─── Select Columns In Range ─────────────────────────────────────────
 
-export function putCursorsInLinesRangeWithCurrentColumn(
+export
+function
+putCursorsInLinesRangeWithCurrentColumn(
   startingLine: number,
   endLine:      number,
 ) {

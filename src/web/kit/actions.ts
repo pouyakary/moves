@@ -4,19 +4,24 @@ import * as kit    from '.';
 
 // ─── Editor ──────────────────────────────────────────────────────────
 
-function getEditor() {
+function
+getEditor() {
   return vscode.window.activeTextEditor!;
 }
 
 // ─── Display Message ─────────────────────────────────────────────────
 
-export function alert(message: string) {
+export
+function
+alert(message: string) {
   vscode.window.showInformationMessage(message);
 }
 
 // ─── Insert At ───────────────────────────────────────────────────────
 
-export async function insertAt(position: vscode.Position, text: string) {
+export
+async function
+insertAt(position: vscode.Position, text: string) {
   await getEditor().edit(edit => {
     edit.insert(position, text);
   });
@@ -24,7 +29,9 @@ export async function insertAt(position: vscode.Position, text: string) {
 
 // ─── Delete Current Line Between Two Columns ─────────────────────────
 
-export async function deleteCurrentLineBetweenTwoColumn(
+export
+async function
+deleteCurrentLineBetweenTwoColumn(
   start: number,
   end:   number,
 ) {
@@ -38,6 +45,8 @@ export async function deleteCurrentLineBetweenTwoColumn(
 
 // ─── Set Selections ──────────────────────────────────────────────────
 
-export function setSelections(selections: vscode.Selection[]) {
+export
+function
+setSelections(selections: vscode.Selection[]) {
   getEditor().selections = selections;
 }

@@ -3,8 +3,11 @@ import * as actions from './actions';
 
 // ─── Activate ──────────────────────────────────────────────────────────── ✣ ─
 
-export function activate(context: vscode.ExtensionContext) {
-	function registerCommandHandler(name: string, callback: () => Promise<void>) {
+export
+function
+activate(context: vscode.ExtensionContext) {
+	function
+	registerCommandHandler(name: string, callback: () => Promise<void>) {
 		const disposable = vscode.commands.registerCommand(name, callback);
 		context.subscriptions.push(disposable);
 	}
@@ -25,4 +28,6 @@ export function activate(context: vscode.ExtensionContext) {
 
 // ─── Deactivate ────────────────────────────────────────────────────────── ✣ ─
 
-export function deactivate() { }
+export
+function
+deactivate() { }
