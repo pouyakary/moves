@@ -1,13 +1,11 @@
-import * as kit    from '../kit';
-import * as vscode from 'vscode';
+import * as kit from "../kit";
+import * as vscode from "vscode";
 
 // ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
 
 // Adds the cursor to all the lines that
 // share the same.
-export
-async function
-addCursorToAllNeighborLines() {
+export async function addCursorToAllNeighborLines() {
   const linesRange = kit.columns.getNeighborLinesOfCurrentRenderColumn();
   if (linesRange === null || linesRange[0] === linesRange[1]) {
     showNothingToSelectIndicator();
@@ -18,11 +16,10 @@ addCursorToAllNeighborLines() {
 
 // ─── Nothing To Select Indicator ───────────────────────────────────────── ✣ ─
 
-function
-showNothingToSelectIndicator() {
-  const showTime      = 400;
+function showNothingToSelectIndicator() {
+  const showTime = 400;
   const statusbarItem = vscode.window.createStatusBarItem();
-  statusbarItem.text  = "●";
+  statusbarItem.text = "●";
   statusbarItem.show();
 
   setTimeout(() => {

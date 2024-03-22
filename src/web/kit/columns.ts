@@ -1,17 +1,13 @@
-import * as vscode from 'vscode';
-import * as kit    from '.';
+import * as vscode from "vscode";
+import * as kit from ".";
 
 // ─── Position ────────────────────────────────────────────────────────
 
-export
-function
-getCurrentPhysicalColumn(): number {
+export function getCurrentPhysicalColumn(): number {
   return kit.document.getCurrentColumn();
 }
 
-export
-function
-getCurrentRenderColumn(): number {
+export function getCurrentRenderColumn(): number {
   return physicalToRender(
     kit.document.getCurrentLine(),
     kit.document.getCurrentColumn(),
@@ -20,22 +16,20 @@ getCurrentRenderColumn(): number {
 
 // ─── Current Render Column ───────────────────────────────────────────
 
-export
-function
-physicalToRender(lineNumber: number, physicalColumn: number) {
-  const content      = kit.document.contentOfLine(lineNumber);
-  const characters   = [...content];
-  const tabSize      = kit.document.getTabSize();
-  let   renderColumn = 0;
+export function physicalToRender(lineNumber: number, physicalColumn: number) {
+  const content = kit.document.contentOfLine(lineNumber);
+  const characters = [...content];
+  const tabSize = kit.document.getTabSize();
+  let renderColumn = 0;
 
   for (let index = 0; index < physicalColumn; index++) {
-    // This is very important. Tabs are
-    // stopping at columns of their ratio. Say
-    // when you are at column 10, tab size is
-    // 4, the nearest divisor of 4 is 12,
-    // therefore the tab stops at column 12 not
-    // 14.
-    if (characters[index] === '\t') {
+    // This   is   very   important.  Tabs  are
+    // stopping at columns of their ratio.  Say
+    // when  you  are at column 10, tab size is
+    // 4, the  nearest  divisor  of  4  is  12,
+    // therefore  the  tab  stops  at column 12
+    // not 14.
+    if (characters[index] === "\t") {
       const remainder = (renderColumn + 1) % tabSize;
       renderColumn += tabSize - remainder + 1;
     } else {
@@ -48,23 +42,20 @@ physicalToRender(lineNumber: number, physicalColumn: number) {
 
 // ─── Convert Render Column To Physical Column In Line ────────────────
 
-export
-function
-renderToPhysical(
-  line:           number,
+export function renderToPhysical(
+  line: number,
   expectedColumn: number,
 ): number | null {
-
-  const lineContent  = kit.document.contentOfLine(line);
-  const characters   = [...lineContent];
-  const tabSize      = kit.document.getTabSize();
-  let   renderColumn = 0;
+  const lineContent = kit.document.contentOfLine(line);
+  const characters = [...lineContent];
+  const tabSize = kit.document.getTabSize();
+  let renderColumn = 0;
 
   for (let index = 0; index < characters.length; index++) {
     if (renderColumn === expectedColumn) {
       return index;
     }
-    if (characters[index] === '\t') {
+    if (characters[index] === "\t") {
       const remainder = (renderColumn + 1) % tabSize;
       renderColumn += tabSize - remainder + 1;
     } else {
@@ -77,23 +68,21 @@ renderToPhysical(
 
 // ─── Compute Column Of The Line ──────────────────────────────────────
 
-export
-function
-computeAllRenderColumnStarts(line: string): number[] {
+export function computeAllRenderColumnStarts(line: string): number[] {
   const tabSize = kit.document.getTabSize();
   const results = new Array<number>();
 
   let previousCharacterWasSpace = true;
-  let visualColumnCount         = 0;
+  let visualColumnCount = 0;
 
   for (const character of [...line]) {
-    const characterIsNotSpace = character !== ' ' && character !== '\t';
+    const characterIsNotSpace = character !== " " && character !== "\t";
 
     if (characterIsNotSpace && previousCharacterWasSpace) {
       results.push(visualColumnCount);
     }
 
-    if (character === '\t') {
+    if (character === "\t") {
       const remainder = (visualColumnCount + 1) % tabSize;
       visualColumnCount += tabSize - remainder + 1;
     } else {
@@ -108,10 +97,8 @@ computeAllRenderColumnStarts(line: string): number[] {
 
 // ─── Word At ─────────────────────────────────────────────────────────
 
-export
-function
-getCharacterAtRenderColumn(
-  line:         number,
+export function getCharacterAtRenderColumn(
+  line: number,
   renderColumn: number,
 ): string | null {
   const physicalColumn = renderToPhysical(line, renderColumn);
@@ -126,29 +113,25 @@ getCharacterAtRenderColumn(
 
 // ─── Current Character ───────────────────────────────────────────────
 
-export
-function
-getCurrentCharacter(): string | null {
+export function getCurrentCharacter(): string | null {
   return getCharacterAtRenderColumn(
     kit.document.getCurrentLine(),
     getCurrentRenderColumn(),
   );
 }
 
-
 // ─── Cursor Position ─────────────────────────────────────────────────
 
-export
-function
-getPhysicalCursorPosition(): vscode.Position {
-  return new vscode.Position(kit.document.getCurrentLine(), getCurrentPhysicalColumn());
+export function getPhysicalCursorPosition(): vscode.Position {
+  return new vscode.Position(
+    kit.document.getCurrentLine(),
+    getCurrentPhysicalColumn(),
+  );
 }
 
 // ─── Columns Above ───────────────────────────────────────────────────
 
-export
-function
-getColumnsAbove(): number[] {
+export function getColumnsAbove(): number[] {
   return computeAllRenderColumnStarts(
     kit.document.getContentOfTheFirstFilledLineAbove(),
   );
@@ -156,9 +139,7 @@ getColumnsAbove(): number[] {
 
 // ─── Columns Below ───────────────────────────────────────────────────
 
-export
-function
-getColumnsBelow(): number[] {
+export function getColumnsBelow(): number[] {
   return computeAllRenderColumnStarts(
     kit.document.getContentOfTheFirstFilledLineBelow(),
   );
@@ -166,19 +147,19 @@ getColumnsBelow(): number[] {
 
 // ─── Lines With The Same Column ──────────────────────────────────────
 
-export
-function
-getNeighborLinesOfCurrentRenderColumn(): [number, number] | null {
+export function getNeighborLinesOfCurrentRenderColumn():
+  | [number, number]
+  | null {
   const currentRenderColumn = getCurrentRenderColumn;
-  const lineCount           = kit.document.getDocumentLineCount();
-  const currentCharacter    = getCurrentCharacter;
+  const lineCount = kit.document.getDocumentLineCount();
+  const currentCharacter = getCurrentCharacter;
 
   if (currentCharacter === null) {
     return null;
   }
 
   let startLine = kit.document.getCurrentLine();
-  let endLine   = kit.document.getCurrentLine();
+  let endLine = kit.document.getCurrentLine();
 
   // lines above
   for (let lineNo = kit.document.getCurrentLine(); lineNo >= 0; lineNo--) {
@@ -199,9 +180,13 @@ getNeighborLinesOfCurrentRenderColumn(): [number, number] | null {
   }
 
   // lines under
-  for (let lineNo = kit.document.getCurrentLine(); lineNo < lineCount; lineNo++) {
+  for (
+    let lineNo = kit.document.getCurrentLine();
+    lineNo < lineCount;
+    lineNo++
+  ) {
     const columns = computeAllRenderColumnStarts(
-      kit.document.contentOfLine(lineNo)
+      kit.document.contentOfLine(lineNo),
     );
     if (columns.includes(currentRenderColumn())) {
       const word = getCharacterAtRenderColumn(lineNo, currentRenderColumn());
@@ -218,9 +203,7 @@ getNeighborLinesOfCurrentRenderColumn(): [number, number] | null {
 
 // ─── Next Column Above ───────────────────────────────────────────────
 
-export
-function
-geNextRenderColumnAbove(): number {
+export function geNextRenderColumnAbove(): number {
   for (const column of getColumnsAbove()) {
     if (column > getCurrentPhysicalColumn()) {
       return column;
@@ -231,9 +214,7 @@ geNextRenderColumnAbove(): number {
 
 // ─── Next Column Below ───────────────────────────────────────────────
 
-export
-function
-getNextRenderColumnBelow(): number {
+export function getNextRenderColumnBelow(): number {
   for (const column of getColumnsBelow()) {
     if (column > getCurrentPhysicalColumn()) {
       return column;
@@ -244,9 +225,7 @@ getNextRenderColumnBelow(): number {
 
 // ─── Previous Column Above ───────────────────────────────────────────
 
-export
-function
-getPreviousRenderColumnAbove(): number {
+export function getPreviousRenderColumnAbove(): number {
   for (const column of getColumnsAbove().reverse()) {
     if (column < getCurrentPhysicalColumn()) {
       return column;
@@ -257,9 +236,7 @@ getPreviousRenderColumnAbove(): number {
 
 // ─── Previous Column Below ───────────────────────────────────────────
 
-export
-function
-getPreviousRenderColumnBelow(): number {
+export function getPreviousRenderColumnBelow(): number {
   for (const column of getColumnsBelow().reverse()) {
     if (column < getCurrentPhysicalColumn()) {
       return column;
@@ -270,24 +247,17 @@ getPreviousRenderColumnBelow(): number {
 
 // ─── Select Columns In Range ─────────────────────────────────────────
 
-export
-function
-putCursorsInLinesRangeWithCurrentColumn(
+export function putCursorsInLinesRangeWithCurrentColumn(
   startingLine: number,
-  endLine:      number,
+  endLine: number,
 ) {
   const currentRenderColumn = getCurrentRenderColumn;
-  const selections          = new Array<vscode.Selection>();
+  const selections = new Array<vscode.Selection>();
 
   for (let lineNo = startingLine; lineNo <= endLine; lineNo++) {
-    const physicalColumn = renderToPhysical(
-      lineNo,
-      currentRenderColumn()
-    );
+    const physicalColumn = renderToPhysical(lineNo, currentRenderColumn());
     selections.push(
-      new vscode.Selection(
-        lineNo, physicalColumn!, lineNo, physicalColumn!,
-      ),
+      new vscode.Selection(lineNo, physicalColumn!, lineNo, physicalColumn!),
     );
   }
 
