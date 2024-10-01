@@ -1,7 +1,7 @@
 import * as kit from "../kit";
 import * as vscode from "vscode";
 
-// ─── Executer ──────────────────────────────────────────────────────────── ✣ ─
+// MARK: Executer
 
 // Adds the cursor to all the lines that
 // share the same.
@@ -14,7 +14,7 @@ export async function addCursorToAllNeighborLines() {
   kit.columns.putCursorsInLinesRangeWithCurrentColumn(...linesRange);
 }
 
-// ─── Nothing To Select Indicator ───────────────────────────────────────── ✣ ─
+// MARK: Nothing To Select Indicator 
 
 function showNothingToSelectIndicator() {
   const showTime = 400;
